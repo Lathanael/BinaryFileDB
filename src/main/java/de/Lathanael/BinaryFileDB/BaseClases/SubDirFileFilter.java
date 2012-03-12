@@ -1,0 +1,90 @@
+/*************************************************************************
+ * Copyright (C) 2012 Philippe Leipold
+ *
+ * This file is part of BinaryFileDB.
+ *
+ * BinaryFileDB is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * BinaryFileDB is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with BinaryFileDB. If not, see <http://www.gnu.org/licenses/>.
+ *
+ **************************************************************************/
+
+package de.Lathanael.BinaryFileDB.BaseClases;
+
+import java.io.File;
+import java.io.FileFilter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.regex.Pattern;
+
+/**
+ * @author Lathanael (aka Philippe Leipold)
+ *
+ */
+public class SubDirFileFilter {
+
+	/**
+	 * Returns a List<File> of all Dirs/Files depending on the filter. If
+	 * recursive is set to true it will get dirs/files in sub-diretories too.
+	 *
+	 * @param basedir
+	 * @param filter
+	 * @param recursive
+	 * @return
+	 */
+	public static final List<File> getFiles(final File basedir, final FileFilter filter, boolean recursive) {
+
+			List<File> files = new ArrayList<File>();
+			if (basedir != null && basedir.isDirectory()) {
+				if (recursive)
+					for (File subdir : basedir.listFiles())
+						files.addAll(SubDirFileFilter.getFiles(subdir, filter, recursive));
+				files.addAll(Arrays.asList(basedir.listFiles(filter)));
+			}
+			return files;
+		}
+
+	/**
+	 * Defines for what type of file should be looked for!
+	 *
+	 */
+	public enum Type implements FileFilter {
+
+		FILE,
+		DIR,
+		ALL;
+
+		public boolean accept(final File file) {
+			return file != null && (this == ALL || this == FILE && file.isFile() || this == DIR && file.isDirectory());
+		}
+	}
+
+	/**
+	 * Gets a file matching a given suffix pattern like ".java"
+	 *
+	 */
+	public class PatternFilter implements FileFilter {
+
+		private final Type type;
+		private final String pattern;
+
+		public PatternFilter(final Type type, final String pattern) {
+			this.type = type;
+			this.pattern = "^.*" + Pattern.quote(pattern) + "$";
+		}
+
+		public boolean accept(final File file) {
+			return type.accept(file) && file.getName().matches(pattern);
+		}
+	}
+}
