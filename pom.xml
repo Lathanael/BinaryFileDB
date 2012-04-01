@@ -242,11 +242,11 @@
             <name>Bukkit Plugins Snapshot</name>
             <url>http://www.gestdown.info:8888/nexus/content/repositories/bukkit-plugin-snapshot/</url>
         </snapshotRepository>
-    </distributionManagement>
     <site>
       <id>github-project-site</id>
       <url>gitsite:git@github.com/Lathanael/BinaryFileDB.git</url>
     </site>
+    </distributionManagement>
   <dependencies>
      <dependency>
             <groupId>org.bukkit</groupId>
