@@ -18,7 +18,7 @@
  *
  **************************************************************************/
 
-package de.Lathanael.BinaryFileDB.BaseClases;
+package de.Lathanael.BinaryFileDB.API;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -28,27 +28,38 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 /**
- * @author Lathanael (aka Philippe Leipold)
+ * Implements a {@link java.io.FileFilter FileFilter} to return files matching a given pattern.</br>
+ * It also can search all sub-directories by a recursive implementation.</br>
+ * You can also use the Type to only search for DIRS.
+ * </p>
+ * Example:
+ * <pre>
+ * import de.Lathanael.BinaryFileDB.API.SubDirFileFilter.Type;
+ * import de.Lathanael.BinaryFileDB.API.SubDirFileFilter.PatternFilter;
  *
+ * SubDirFileFilter filter = new SubDirFileFilter();
+ * List<File> files = filter.getFiles(new File(""),
+ *                       filter.new PatternFilter(Type.ALL, ".java"),
+ *                       true);
+ * </pre>
+ * @author Lathanael (aka Philippe Leipold)
  */
 public class SubDirFileFilter {
 
 	/**
 	 * Returns a List<File> of all Dirs/Files depending on the filter. If
 	 * recursive is set to true it will get dirs/files in sub-diretories too.
-	 *
 	 * @param basedir
 	 * @param filter
 	 * @param recursive
-	 * @return
+	 * @return A list of files and/or directories matching the input pattern
 	 */
-	public static final List<File> getFiles(final File basedir, final FileFilter filter, boolean recursive) {
-
+	public final List<File> getFiles(final File basedir, final FileFilter filter, boolean recursive) {
 			List<File> files = new ArrayList<File>();
 			if (basedir != null && basedir.isDirectory()) {
 				if (recursive)
 					for (File subdir : basedir.listFiles())
-						files.addAll(SubDirFileFilter.getFiles(subdir, filter, recursive));
+						files.addAll(this.getFiles(subdir, filter, recursive));
 				files.addAll(Arrays.asList(basedir.listFiles(filter)));
 			}
 			return files;
@@ -56,13 +67,9 @@ public class SubDirFileFilter {
 
 	/**
 	 * Defines for what type of file should be looked for!
-	 *
 	 */
 	public enum Type implements FileFilter {
-
-		FILE,
-		DIR,
-		ALL;
+		FILE, DIR, ALL;
 
 		public boolean accept(final File file) {
 			return file != null && (this == ALL || this == FILE && file.isFile() || this == DIR && file.isDirectory());
@@ -71,10 +78,8 @@ public class SubDirFileFilter {
 
 	/**
 	 * Gets a file matching a given suffix pattern like ".java"
-	 *
 	 */
 	public class PatternFilter implements FileFilter {
-
 		private final Type type;
 		private final String pattern;
 

@@ -1,6 +1,8 @@
 /*************************************************************************
  * Copyright (C) 2012 Philippe Leipold
  *
+ * This file is part of BinaryFileDB.
+ *
  * BinaryFileDB is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -16,25 +18,19 @@
  *
  **************************************************************************/
 
-package de.Lathanael.BinaryFileDB.bukkit;
-
-import java.util.logging.Logger;
-
-import org.bukkit.plugin.java.JavaPlugin;
+package de.Lathanael.BinaryFileDB.Exception;
 
 /**
+ * Thrown when the size of a cache was initiated with a value
+ * equal or below 0.
+ *
  * @author Lathanael (aka Philippe Leipold)
  */
-public class Main extends JavaPlugin {
+public class CacheSizeException extends Exception {
 
-	public static Logger log;
+	private static final long serialVersionUID = -2562612199898964743L;
 
-	public void onDisable() {
-		log.info("Version " + this.getDescription().getVersion() + " disabled.");
-	}
-
-	public void onEnable() {
-		log = getLogger();
-		log.info("Version " + this.getDescription().getVersion() + " enabled.");
+	public CacheSizeException() {
+		super("The size of the cache must be greater 0!");
 	}
 }
