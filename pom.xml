@@ -4,6 +4,11 @@
   <artifactId>BinaryFileDB</artifactId>
   <version>1.0-SNAPSHOT</version>
   <name>BinaryFileDB</name>
+  <scm>
+        <connection>scm:git:git@github.com:Lathanael/BinaryFileDB.git</connection>
+        <url>scm:git:git@github.com:Lathanael/BinaryFileDB.git</url>
+        <developerConnection>scm:git:git@github.com:Lathanael/BinaryFileDB.git</developerConnection>
+  </scm>
   <build>
       <plugins>
         <plugin>
@@ -184,6 +189,23 @@
         		</includes>
         	</resource>
         </resources>
+        <extensions>
+      <extension>
+        <groupId>org.apache.maven.scm</groupId>
+        <artifactId>maven-scm-provider-gitexe</artifactId>
+        <version>1.3</version>
+      </extension>
+      <extension>
+        <groupId>org.apache.maven.scm</groupId>
+        <artifactId>maven-scm-manager-plexus</artifactId>
+        <version>1.3</version>
+      </extension>
+      <extension>
+        <groupId>com.github.stephenc.wagon</groupId>
+        <artifactId>wagon-gitsite</artifactId>
+        <version>0.4.1</version>
+      </extension>
+    </extensions>
   </build>
   <repositories>
         <repository>
@@ -191,6 +213,11 @@
             <id>BukkitDev</id>
             <name>BukkitDev</name>
             <url>http://www.gestdown.info:8888/nexus/content/groups/BukkitDev/</url>
+        </repository>
+        <repository>
+        	<id>Maven2</id>
+        	<name>Maven2</name>
+        	<url>http://repo1.maven.org/maven2</url>
         </repository>
     </repositories>
     <pluginRepositories>
@@ -216,6 +243,10 @@
             <url>http://www.gestdown.info:8888/nexus/content/repositories/bukkit-plugin-snapshot/</url>
         </snapshotRepository>
     </distributionManagement>
+    <site>
+      <id>github-project-site</id>
+      <url>gitsite:git@github.com/Lathanael/BinaryFileDB.git</url>
+    </site>
   <dependencies>
      <dependency>
             <groupId>org.bukkit</groupId>
@@ -231,6 +262,11 @@
             <type>jar</type>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+    		<groupId>com.github.stephenc.wagon</groupId>
+    		<artifactId>wagon-gitsite</artifactId>
+    		<version>0.4.1</version>
+		</dependency>
   </dependencies>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
