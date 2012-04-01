@@ -18,7 +18,7 @@
  *
  ******************************************************************************/
 
-package de.Lathanael.BinaryFileDB.BaseClase;
+package de.Lathanael.BinaryFileDB.BaseClass;
 
 import java.io.*;
 import java.util.*;
@@ -116,10 +116,10 @@ public abstract class BaseRecordsFile {
 	 * the index for the specified initial size. The user can define the lenghts of key, header etc!
 	 * @param dbPath - Pathname where the file is located as a String
 	 * @param initialSize - Size of the db created
-	 * @param MAX_KEY_LENGTH - {@link de.Lathanael.BinaryFileDB.BaseClase.BaseRecordsFile#MAX_KEY_LENGTH MAX_KEY_LENGTH}
-	 * @param DATA_START_HEADER_LOCATION - {@link de.Lathanael.BinaryFileDB.BaseClase.BaseRecordsFile#DATA_START_HEADER_LOCATION DATA_START_HEADER_LOCATION}
-	 * @param FILE_HEADERS_REGION_LENGTH - {@link de.Lathanael.BinaryFileDB.BaseClase.BaseRecordsFile#FILE_HEADERS_REGION_LENGTH FILE_HEADERS_REGION_LENGTH}
-	 * @param RECORD_HEADER_LENGTH {@link de.Lathanael.BinaryFileDB.BaseClase.BaseRecordsFile#RECORD_HEADER_LENGTH RECORD_HEADER_LENGTH}
+	 * @param MAX_KEY_LENGTH - {@link de.Lathanael.BinaryFileDB.BaseClass.BaseRecordsFile#MAX_KEY_LENGTH MAX_KEY_LENGTH}
+	 * @param DATA_START_HEADER_LOCATION - {@link de.Lathanael.BinaryFileDB.BaseClass.BaseRecordsFile#DATA_START_HEADER_LOCATION DATA_START_HEADER_LOCATION}
+	 * @param FILE_HEADERS_REGION_LENGTH - {@link de.Lathanael.BinaryFileDB.BaseClass.BaseRecordsFile#FILE_HEADERS_REGION_LENGTH FILE_HEADERS_REGION_LENGTH}
+	 * @param RECORD_HEADER_LENGTH {@link de.Lathanael.BinaryFileDB.BaseClass.BaseRecordsFile#RECORD_HEADER_LENGTH RECORD_HEADER_LENGTH}
 	 * @throws IOException
 	 * @throws RecordsFileException
 	 */
@@ -169,10 +169,10 @@ public abstract class BaseRecordsFile {
 	 * lengths of key, header etc.
 	 * @param dbPath - Pathname where the file is located as a String
 	 * @param accessFlags - Whether the new DBFile should hava read-only "r" or read/write "rw" access
-	 * @param MAX_KEY_LENGTH - {@link de.Lathanael.BinaryFileDB.BaseClase.BaseRecordsFile#MAX_KEY_LENGTH MAX_KEY_LENGTH}
-	 * @param DATA_START_HEADER_LOCATION - {@link de.Lathanael.BinaryFileDB.BaseClase.BaseRecordsFile#DATA_START_HEADER_LOCATION DATA_START_HEADER_LOCATION}
-	 * @param FILE_HEADERS_REGION_LENGTH - {@link de.Lathanael.BinaryFileDB.BaseClase.BaseRecordsFile#FILE_HEADERS_REGION_LENGTH FILE_HEADERS_REGION_LENGTH}
-	 * @param RECORD_HEADER_LENGTH {@link de.Lathanael.BinaryFileDB.BaseClase.BaseRecordsFile#RECORD_HEADER_LENGTH RECORD_HEADER_LENGTH}
+	 * @param MAX_KEY_LENGTH - {@link de.Lathanael.BinaryFileDB.BaseClass.BaseRecordsFile#MAX_KEY_LENGTH MAX_KEY_LENGTH}
+	 * @param DATA_START_HEADER_LOCATION - {@link de.Lathanael.BinaryFileDB.BaseClass.BaseRecordsFile#DATA_START_HEADER_LOCATION DATA_START_HEADER_LOCATION}
+	 * @param FILE_HEADERS_REGION_LENGTH - {@link de.Lathanael.BinaryFileDB.BaseClass.BaseRecordsFile#FILE_HEADERS_REGION_LENGTH FILE_HEADERS_REGION_LENGTH}
+	 * @param RECORD_HEADER_LENGTH {@link de.Lathanael.BinaryFileDB.BaseClass.BaseRecordsFile#RECORD_HEADER_LENGTH RECORD_HEADER_LENGTH}
 	 * @throws IOException
 	 * @throws RecordsFileException
 	 */

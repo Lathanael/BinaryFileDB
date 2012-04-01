@@ -20,7 +20,7 @@ package de.Lathanael.BinaryFileDB.API;
 
 import java.io.*;
 
-import de.Lathanael.BinaryFileDB.BaseClase.DbByteArrayOutputStream;
+import de.Lathanael.BinaryFileDB.BaseClass.DbByteArrayOutputStream;
 
 /**
  * A class to serialize an object first and call the write-process later.

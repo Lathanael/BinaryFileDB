@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with BinaryFileDB. If not, see http://www.gnu.org/licenses/.
  ******************************************************************************/
-package de.Lathanael.BinaryFileDB.BaseClase;
+package de.Lathanael.BinaryFileDB.BaseClass;
 
 import java.io.*;
 import java.nio.ByteBuffer;
@@ -71,7 +71,7 @@ public class IndexEntry {
 	 * @param dataPointer - Where in the file is the data located.
 	 * @param dataCapacity - The maximum capacity for this entry
 	 * @param key - The key with which this entry can be read
-	 * @param maxKeyLength - The maximum KeyLength allowed by the {@link de.Lathanael.BinaryFileDB.BaseClase.RecordsFile RecordsFile}
+	 * @param maxKeyLength - The maximum KeyLength allowed by the {@link de.Lathanael.BinaryFileDB.BaseClass.RecordsFile RecordsFile}
 	 */
 	protected IndexEntry(long dataPointer, int dataCapacity, String key, int maxKeyLength) {
 		if (dataCapacity < 1)

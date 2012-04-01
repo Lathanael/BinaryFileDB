@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with BinaryFileDB. If not, see http://www.gnu.org/licenses/.
  ******************************************************************************/
-package de.Lathanael.BinaryFileDB.BaseClase;
+package de.Lathanael.BinaryFileDB.BaseClass;
 
 import java.io.*;
 

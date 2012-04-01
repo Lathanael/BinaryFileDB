@@ -23,16 +23,16 @@ package de.Lathanael.BinaryFileDB.API;
 import java.io.IOException;
 import java.util.Map;
 
-import de.Lathanael.BinaryFileDB.BaseClase.DataWriteQueue;
-import de.Lathanael.BinaryFileDB.BaseClase.RRWLock;
-import de.Lathanael.BinaryFileDB.BaseClase.RecordsFile;
+import de.Lathanael.BinaryFileDB.BaseClass.DataWriteQueue;
+import de.Lathanael.BinaryFileDB.BaseClass.RRWLock;
+import de.Lathanael.BinaryFileDB.BaseClass.RecordsFile;
 import de.Lathanael.BinaryFileDB.Exception.CacheSizeException;
 import de.Lathanael.BinaryFileDB.Exception.QueueException;
 import de.Lathanael.BinaryFileDB.Exception.RecordsFileException;
 
 /**
  * This class provides an API to a BinaryFile-DataBase through</br>
- * the use of a {@link de.Lathanael.BinaryFileDB.BaseClase.RecordsFile RecordsFile}.</br>
+ * the use of a {@link de.Lathanael.BinaryFileDB.BaseClass.RecordsFile RecordsFile}.</br>
  * It also provides some methods to handle multiple files of the</br>
  * same type and a WriteQueue to lesser the I/O done by the</br>
  * file-database and a ReentrantReadWriteLock.
@@ -128,10 +128,10 @@ public class DBAccessLocked {
 	 * The queue function is disabled.
 	 * @param dbPath - Pathname where the file is located as a String
 	 * @param initialSize - Size of the db created
-	 * @param MAX_KEY_LENGTH - {@link de.Lathanael.BinaryFileDB.BaseClase.BaseRecordsFile#MAX_KEY_LENGTH MAX_KEY_LENGTH}
-	 * @param DATA_START_HEADER_LOCATION - {@link de.Lathanael.BinaryFileDB.BaseClase.BaseRecordsFile#DATA_START_HEADER_LOCATION DATA_START_HEADER_LOCATION}
-	 * @param FILE_HEADERS_REGION_LENGTH - {@link de.Lathanael.BinaryFileDB.BaseClase.BaseRecordsFile#FILE_HEADERS_REGION_LENGTH FILE_HEADERS_REGION_LENGTH}
-	 * @param RECORD_HEADER_LENGTH {@link de.Lathanael.BinaryFileDB.BaseClase.BaseRecordsFile#RECORD_HEADER_LENGTH RECORD_HEADER_LENGTH}
+	 * @param MAX_KEY_LENGTH - {@link de.Lathanael.BinaryFileDB.BaseClass.BaseRecordsFile#MAX_KEY_LENGTH MAX_KEY_LENGTH}
+	 * @param DATA_START_HEADER_LOCATION - {@link de.Lathanael.BinaryFileDB.BaseClass.BaseRecordsFile#DATA_START_HEADER_LOCATION DATA_START_HEADER_LOCATION}
+	 * @param FILE_HEADERS_REGION_LENGTH - {@link de.Lathanael.BinaryFileDB.BaseClass.BaseRecordsFile#FILE_HEADERS_REGION_LENGTH FILE_HEADERS_REGION_LENGTH}
+	 * @param RECORD_HEADER_LENGTH {@link de.Lathanael.BinaryFileDB.BaseClass.BaseRecordsFile#RECORD_HEADER_LENGTH RECORD_HEADER_LENGTH}
 	 * @throws CacheSizeException
 	 * @throws IOException
 	 * @throws RecordsFileException
@@ -155,10 +155,10 @@ public class DBAccessLocked {
 	 * efficiency. Let's the user define the length of keys etc.
 	 * @param dbPath - Pathname where the file is located as a String
 	 * @param initialSize - Size of the db created
-	 * @param MAX_KEY_LENGTH - {@link de.Lathanael.BinaryFileDB.BaseClase.BaseRecordsFile#MAX_KEY_LENGTH MAX_KEY_LENGTH}
-	 * @param DATA_START_HEADER_LOCATION - {@link de.Lathanael.BinaryFileDB.BaseClase.BaseRecordsFile#DATA_START_HEADER_LOCATION DATA_START_HEADER_LOCATION}
-	 * @param FILE_HEADERS_REGION_LENGTH - {@link de.Lathanael.BinaryFileDB.BaseClase.BaseRecordsFile#FILE_HEADERS_REGION_LENGTH FILE_HEADERS_REGION_LENGTH}
-	 * @param RECORD_HEADER_LENGTH {@link de.Lathanael.BinaryFileDB.BaseClase.BaseRecordsFile#RECORD_HEADER_LENGTH RECORD_HEADER_LENGTH}
+	 * @param MAX_KEY_LENGTH - {@link de.Lathanael.BinaryFileDB.BaseClass.BaseRecordsFile#MAX_KEY_LENGTH MAX_KEY_LENGTH}
+	 * @param DATA_START_HEADER_LOCATION - {@link de.Lathanael.BinaryFileDB.BaseClass.BaseRecordsFile#DATA_START_HEADER_LOCATION DATA_START_HEADER_LOCATION}
+	 * @param FILE_HEADERS_REGION_LENGTH - {@link de.Lathanael.BinaryFileDB.BaseClass.BaseRecordsFile#FILE_HEADERS_REGION_LENGTH FILE_HEADERS_REGION_LENGTH}
+	 * @param RECORD_HEADER_LENGTH {@link de.Lathanael.BinaryFileDB.BaseClass.BaseRecordsFile#RECORD_HEADER_LENGTH RECORD_HEADER_LENGTH}
 	 * @param useQueue - If set to true a queue will be created to lessen IO stress on the Disk
 	 * @param queueSize - Size of the queue if it is used it must be greater 0!
 	 * @throws CacheSizeException
@@ -185,10 +185,10 @@ public class DBAccessLocked {
 	 * The queue function is disabled.
 	 * @param dbPath - Pathname where the file is located as a String
 	 * @param accessFlags - Whether the new DBFile should hava read-only "r" or read/write "rw" access
-	 * @param MAX_KEY_LENGTH - {@link de.Lathanael.BinaryFileDB.BaseClase.BaseRecordsFile#MAX_KEY_LENGTH MAX_KEY_LENGTH}
-	 * @param DATA_START_HEADER_LOCATION - {@link de.Lathanael.BinaryFileDB.BaseClase.BaseRecordsFile#DATA_START_HEADER_LOCATION DATA_START_HEADER_LOCATION}
-	 * @param FILE_HEADERS_REGION_LENGTH - {@link de.Lathanael.BinaryFileDB.BaseClase.BaseRecordsFile#FILE_HEADERS_REGION_LENGTH FILE_HEADERS_REGION_LENGTH}
-	 * @param RECORD_HEADER_LENGTH {@link de.Lathanael.BinaryFileDB.BaseClase.BaseRecordsFile#RECORD_HEADER_LENGTH RECORD_HEADER_LENGTH}
+	 * @param MAX_KEY_LENGTH - {@link de.Lathanael.BinaryFileDB.BaseClass.BaseRecordsFile#MAX_KEY_LENGTH MAX_KEY_LENGTH}
+	 * @param DATA_START_HEADER_LOCATION - {@link de.Lathanael.BinaryFileDB.BaseClass.BaseRecordsFile#DATA_START_HEADER_LOCATION DATA_START_HEADER_LOCATION}
+	 * @param FILE_HEADERS_REGION_LENGTH - {@link de.Lathanael.BinaryFileDB.BaseClass.BaseRecordsFile#FILE_HEADERS_REGION_LENGTH FILE_HEADERS_REGION_LENGTH}
+	 * @param RECORD_HEADER_LENGTH {@link de.Lathanael.BinaryFileDB.BaseClass.BaseRecordsFile#RECORD_HEADER_LENGTH RECORD_HEADER_LENGTH}
 	 * @throws CacheSizeException
 	 * @throws IOException
 	 * @throws RecordsFileException
@@ -209,10 +209,10 @@ public class DBAccessLocked {
 	 * and let's the user define the length of keys etc.
 	 * @param dbPath - Pathname where the file is located as a String
 	 * @param accessFlags - Whether the new DBFile should hava read-only "r" or read/write "rw" access
-	 * @param MAX_KEY_LENGTH - {@link de.Lathanael.BinaryFileDB.BaseClase.BaseRecordsFile#MAX_KEY_LENGTH MAX_KEY_LENGTH}
-	 * @param DATA_START_HEADER_LOCATION - {@link de.Lathanael.BinaryFileDB.BaseClase.BaseRecordsFile#DATA_START_HEADER_LOCATION DATA_START_HEADER_LOCATION}
-	 * @param FILE_HEADERS_REGION_LENGTH - {@link de.Lathanael.BinaryFileDB.BaseClase.BaseRecordsFile#FILE_HEADERS_REGION_LENGTH FILE_HEADERS_REGION_LENGTH}
-	 * @param RECORD_HEADER_LENGTH {@link de.Lathanael.BinaryFileDB.BaseClase.BaseRecordsFile#RECORD_HEADER_LENGTH RECORD_HEADER_LENGTH}
+	 * @param MAX_KEY_LENGTH - {@link de.Lathanael.BinaryFileDB.BaseClass.BaseRecordsFile#MAX_KEY_LENGTH MAX_KEY_LENGTH}
+	 * @param DATA_START_HEADER_LOCATION - {@link de.Lathanael.BinaryFileDB.BaseClass.BaseRecordsFile#DATA_START_HEADER_LOCATION DATA_START_HEADER_LOCATION}
+	 * @param FILE_HEADERS_REGION_LENGTH - {@link de.Lathanael.BinaryFileDB.BaseClass.BaseRecordsFile#FILE_HEADERS_REGION_LENGTH FILE_HEADERS_REGION_LENGTH}
+	 * @param RECORD_HEADER_LENGTH {@link de.Lathanael.BinaryFileDB.BaseClass.BaseRecordsFile#RECORD_HEADER_LENGTH RECORD_HEADER_LENGTH}
 	 * @param useQueue - If set to true a queue will be created to lessen IO stress on the Disk
 	 * @param queueSize - Size of the queue if it is used it must be greater 0!
 	 * @throws CacheSizeException
@@ -316,10 +316,10 @@ public class DBAccessLocked {
 	 * The queue function is disabled.
 	 * @param dbPath - Pathname where the file is located as a String
 	 * @param initialSize - Size of the db created
-	 * @param MAX_KEY_LENGTH - {@link de.Lathanael.BinaryFileDB.BaseClase.BaseRecordsFile#MAX_KEY_LENGTH MAX_KEY_LENGTH}
-	 * @param DATA_START_HEADER_LOCATION - {@link de.Lathanael.BinaryFileDB.BaseClase.BaseRecordsFile#DATA_START_HEADER_LOCATION DATA_START_HEADER_LOCATION}
-	 * @param FILE_HEADERS_REGION_LENGTH - {@link de.Lathanael.BinaryFileDB.BaseClase.BaseRecordsFile#FILE_HEADERS_REGION_LENGTH FILE_HEADERS_REGION_LENGTH}
-	 * @param RECORD_HEADER_LENGTH {@link de.Lathanael.BinaryFileDB.BaseClase.BaseRecordsFile#RECORD_HEADER_LENGTH RECORD_HEADER_LENGTH}
+	 * @param MAX_KEY_LENGTH - {@link de.Lathanael.BinaryFileDB.BaseClass.BaseRecordsFile#MAX_KEY_LENGTH MAX_KEY_LENGTH}
+	 * @param DATA_START_HEADER_LOCATION - {@link de.Lathanael.BinaryFileDB.BaseClass.BaseRecordsFile#DATA_START_HEADER_LOCATION DATA_START_HEADER_LOCATION}
+	 * @param FILE_HEADERS_REGION_LENGTH - {@link de.Lathanael.BinaryFileDB.BaseClass.BaseRecordsFile#FILE_HEADERS_REGION_LENGTH FILE_HEADERS_REGION_LENGTH}
+	 * @param RECORD_HEADER_LENGTH {@link de.Lathanael.BinaryFileDB.BaseClass.BaseRecordsFile#RECORD_HEADER_LENGTH RECORD_HEADER_LENGTH}
 	 * @param cacheSize - Size of the initial cache for recently loaded RecordReaders. Must be greater 0!
 	 * @throws CacheSizeException
 	 * @throws IOException
@@ -344,10 +344,10 @@ public class DBAccessLocked {
 	 * efficiency. Let's the user define the length of keys etc.
 	 * @param dbPath - Pathname where the file is located as a String
 	 * @param initialSize - Size of the db created
-	 * @param MAX_KEY_LENGTH - {@link de.Lathanael.BinaryFileDB.BaseClase.BaseRecordsFile#MAX_KEY_LENGTH MAX_KEY_LENGTH}
-	 * @param DATA_START_HEADER_LOCATION - {@link de.Lathanael.BinaryFileDB.BaseClase.BaseRecordsFile#DATA_START_HEADER_LOCATION DATA_START_HEADER_LOCATION}
-	 * @param FILE_HEADERS_REGION_LENGTH - {@link de.Lathanael.BinaryFileDB.BaseClase.BaseRecordsFile#FILE_HEADERS_REGION_LENGTH FILE_HEADERS_REGION_LENGTH}
-	 * @param RECORD_HEADER_LENGTH {@link de.Lathanael.BinaryFileDB.BaseClase.BaseRecordsFile#RECORD_HEADER_LENGTH RECORD_HEADER_LENGTH}
+	 * @param MAX_KEY_LENGTH - {@link de.Lathanael.BinaryFileDB.BaseClass.BaseRecordsFile#MAX_KEY_LENGTH MAX_KEY_LENGTH}
+	 * @param DATA_START_HEADER_LOCATION - {@link de.Lathanael.BinaryFileDB.BaseClass.BaseRecordsFile#DATA_START_HEADER_LOCATION DATA_START_HEADER_LOCATION}
+	 * @param FILE_HEADERS_REGION_LENGTH - {@link de.Lathanael.BinaryFileDB.BaseClass.BaseRecordsFile#FILE_HEADERS_REGION_LENGTH FILE_HEADERS_REGION_LENGTH}
+	 * @param RECORD_HEADER_LENGTH {@link de.Lathanael.BinaryFileDB.BaseClass.BaseRecordsFile#RECORD_HEADER_LENGTH RECORD_HEADER_LENGTH}
 	 * @param useQueue - If set to true a queue will be created to lessen IO stress on the Disk
 	 * @param queueSize - Size of the queue if it is used it must be greater 0!
 	 * @param cacheSize - Size of the initial cache for recently loaded RecordReaders. Must be greater 0!
@@ -376,10 +376,10 @@ public class DBAccessLocked {
 	 * The queue function is disabled.
 	 * @param dbPath - Pathname where the file is located as a String
 	 * @param accessFlags - Whether the new DBFile should hava read-only "r" or read/write "rw" access
-	 * @param MAX_KEY_LENGTH - {@link de.Lathanael.BinaryFileDB.BaseClase.BaseRecordsFile#MAX_KEY_LENGTH MAX_KEY_LENGTH}
-	 * @param DATA_START_HEADER_LOCATION - {@link de.Lathanael.BinaryFileDB.BaseClase.BaseRecordsFile#DATA_START_HEADER_LOCATION DATA_START_HEADER_LOCATION}
-	 * @param FILE_HEADERS_REGION_LENGTH - {@link de.Lathanael.BinaryFileDB.BaseClase.BaseRecordsFile#FILE_HEADERS_REGION_LENGTH FILE_HEADERS_REGION_LENGTH}
-	 * @param RECORD_HEADER_LENGTH {@link de.Lathanael.BinaryFileDB.BaseClase.BaseRecordsFile#RECORD_HEADER_LENGTH RECORD_HEADER_LENGTH}
+	 * @param MAX_KEY_LENGTH - {@link de.Lathanael.BinaryFileDB.BaseClass.BaseRecordsFile#MAX_KEY_LENGTH MAX_KEY_LENGTH}
+	 * @param DATA_START_HEADER_LOCATION - {@link de.Lathanael.BinaryFileDB.BaseClass.BaseRecordsFile#DATA_START_HEADER_LOCATION DATA_START_HEADER_LOCATION}
+	 * @param FILE_HEADERS_REGION_LENGTH - {@link de.Lathanael.BinaryFileDB.BaseClass.BaseRecordsFile#FILE_HEADERS_REGION_LENGTH FILE_HEADERS_REGION_LENGTH}
+	 * @param RECORD_HEADER_LENGTH {@link de.Lathanael.BinaryFileDB.BaseClass.BaseRecordsFile#RECORD_HEADER_LENGTH RECORD_HEADER_LENGTH}
 	 * @param cacheSize - Size of the initial cache for recently loaded RecordReaders. Must be greater 0!
 	 * @throws CacheSizeException
 	 * @throws IOException
@@ -401,10 +401,10 @@ public class DBAccessLocked {
 	 * and let's the user define the length of keys etc.
 	 * @param dbPath - Pathname where the file is located as a String
 	 * @param accessFlags - Whether the new DBFile should hava read-only "r" or read/write "rw" access
-	 * @param MAX_KEY_LENGTH - {@link de.Lathanael.BinaryFileDB.BaseClase.BaseRecordsFile#MAX_KEY_LENGTH MAX_KEY_LENGTH}
-	 * @param DATA_START_HEADER_LOCATION - {@link de.Lathanael.BinaryFileDB.BaseClase.BaseRecordsFile#DATA_START_HEADER_LOCATION DATA_START_HEADER_LOCATION}
-	 * @param FILE_HEADERS_REGION_LENGTH - {@link de.Lathanael.BinaryFileDB.BaseClase.BaseRecordsFile#FILE_HEADERS_REGION_LENGTH FILE_HEADERS_REGION_LENGTH}
-	 * @param RECORD_HEADER_LENGTH {@link de.Lathanael.BinaryFileDB.BaseClase.BaseRecordsFile#RECORD_HEADER_LENGTH RECORD_HEADER_LENGTH}
+	 * @param MAX_KEY_LENGTH - {@link de.Lathanael.BinaryFileDB.BaseClass.BaseRecordsFile#MAX_KEY_LENGTH MAX_KEY_LENGTH}
+	 * @param DATA_START_HEADER_LOCATION - {@link de.Lathanael.BinaryFileDB.BaseClass.BaseRecordsFile#DATA_START_HEADER_LOCATION DATA_START_HEADER_LOCATION}
+	 * @param FILE_HEADERS_REGION_LENGTH - {@link de.Lathanael.BinaryFileDB.BaseClass.BaseRecordsFile#FILE_HEADERS_REGION_LENGTH FILE_HEADERS_REGION_LENGTH}
+	 * @param RECORD_HEADER_LENGTH {@link de.Lathanael.BinaryFileDB.BaseClass.BaseRecordsFile#RECORD_HEADER_LENGTH RECORD_HEADER_LENGTH}
 	 * @param useQueue - If set to true a queue will be created to lessen IO stress on the Disk
 	 * @param queueSize - Size of the queue if it is used it must be greater 0!
 	 * @param cacheSize - Size of the initial cache for recently loaded RecordReaders. Must be greater 0!

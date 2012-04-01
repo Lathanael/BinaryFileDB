@@ -18,7 +18,7 @@
  *
  **************************************************************************/
 
-package de.Lathanael.BinaryFileDB.BaseClase;
+package de.Lathanael.BinaryFileDB.BaseClass;
 
 /**
  * A basic counter. (just a int!)

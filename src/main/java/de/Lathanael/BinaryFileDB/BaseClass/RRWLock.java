@@ -18,7 +18,7 @@
  *
  **************************************************************************/
 
-package de.Lathanael.BinaryFileDB.BaseClase;
+package de.Lathanael.BinaryFileDB.BaseClass;
 
 import java.util.HashMap;
 import java.util.Map;
