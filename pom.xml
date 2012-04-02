@@ -18,6 +18,10 @@
 		<url>https://github.com/Lathanael/BinaryFileDB</url>
 		<developerConnection>scm:git:git@github.com:Lathanael/BinaryFileDB.git</developerConnection>
 	</scm>
+	<issueManagement>
+		<system>GitHub Issues</system>
+		<url>https://github.com/Lathanael/BinaryFileDB/issues</url>
+	</issueManagement>
 	<licenses>
 		<license>
 			<name>GNU GPL v3</name>
@@ -75,9 +79,9 @@
 				<version>0.5</version>
 				<configuration>
 					<message>Building site for ${project.version}</message>
-				<excludes>
-					<exclude>xref</exclude>
-				</excludes>
+					<excludes>
+						<exclude>xref</exclude>
+					</excludes>
 				</configuration>
 				<executions>
 					<execution>
@@ -140,7 +144,21 @@
 							<configuration>
 								<dependencyDetailsEnabled>true</dependencyDetailsEnabled>
 								<dependencyLocationsEnabled>true</dependencyLocationsEnabled>
+								<webAccessUrl>https://github.com/Lathanael/BinaryFileDB</webAccessUrl>
+								<anonymousConnection>scm:git:git@github.com:Lathanael/BinaryFileDB.git</anonymousConnection>
+								<developerConnection>scm:git:git@github.com:Lathanael/BinaryFileDB.git</developerConnection>
 							</configuration>
+							<reportSets>
+								<reportSet>
+									<reports>
+										<report>dependencies</report>
+										<report>project-team</report>
+										<report>cim</report>
+										<report>issue-tracking</report>
+										<report>license</report>
+									</reports>
+								</reportSet>
+							</reportSets>
 						</plugin>
 					</reportPlugins>
 				</configuration>
