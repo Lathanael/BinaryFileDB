@@ -190,22 +190,12 @@
         	</resource>
         </resources>
         <extensions>
-      		<extension>
-        		<groupId>org.apache.maven.wagon</groupId>
-        		<artifactId>wagon-scm</artifactId>
-        		<version>2.2</version>
-      		</extension>
-      		<extension>
-		        <groupId>org.apache.maven.scm</groupId>
-		        <artifactId>maven-scm-manager-plexus</artifactId>
-		        <version>1.6</version>
-		    </extension>
-      		<extension>
-        		<groupId>org.apache.maven.scm</groupId>
-        		<artifactId>maven-scm-provider-gitexe</artifactId>
-        		<version>1.6</version>
-      		</extension>
-    	</extensions>
+    		<extension>
+      			<groupId>ar.com.synergian</groupId>
+          		<artifactId>wagon-git</artifactId>
+          		<version>0.1.4</version>
+   			 </extension>
+  		</extensions>
   </build>
   <repositories>
         <repository>
@@ -215,10 +205,9 @@
             <url>http://www.gestdown.info:8888/nexus/content/groups/BukkitDev/</url>
         </repository>
         <repository>
-        	<id>Maven2</id>
-        	<name>Maven2</name>
-        	<url>http://repo1.maven.org/maven2</url>
-        </repository>
+    		<id>synergian-repo</id>
+    		<url>https://raw.github.com/synergian/wagon-git/releases</url>
+  		</repository>
     </repositories>
     <pluginRepositories>
         <pluginRepository>
@@ -227,6 +216,16 @@
             <name>BukkitDev</name>
             <url>http://www.gestdown.info:8888/nexus/content/groups/BukkitDev/</url>
         </pluginRepository>
+        <pluginRepository>
+                        <id>synergian-repo</id>
+                        <url>https://raw.github.com/synergian/wagon-git/releases</url>
+                        <releases>
+                                <enabled>true</enabled>
+                        </releases>
+                        <snapshots>
+                                <enabled>false</enabled>
+                        </snapshots>
+                </pluginRepository>
     </pluginRepositories>
 <distributionManagement>
         <!-- Publish the versioned releases here -->
@@ -243,9 +242,9 @@
             <url>http://www.gestdown.info:8888/nexus/content/repositories/bukkit-plugin-snapshot/</url>
         </snapshotRepository>
         <site>
-      		<id>my.git.server</id>
-     		<url>scm:git:ssh://git@github.com/Lathanael/BinaryFileDB.git</url>
-    	</site>
+    		<id>your-repo-id</id>
+        	<url>git:gh-pages://git@github.com:Lathanael/BinaryFileDB.git</url>
+  		</site>
     </distributionManagement>
   <dependencies>
      <dependency>
@@ -263,20 +262,10 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-			<groupId>org.apache.maven.wagon</groupId>
-			<artifactId>wagon-scm</artifactId>
-			<version>2.2</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.maven.scm</groupId>
-			<artifactId>maven-scm-manager-plexus</artifactId>
-			<version>1.6</version>
-		</dependency>
-		<dependency>
-        		<groupId>org.apache.maven.scm</groupId>
-        		<artifactId>maven-scm-provider-gitexe</artifactId>
-        		<version>1.6</version>
-      	</dependency>
+      			<groupId>ar.com.synergian</groupId>
+          		<artifactId>wagon-git</artifactId>
+          		<version>0.1.4</version>
+   		</dependency>
   </dependencies>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
