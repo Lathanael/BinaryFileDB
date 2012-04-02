@@ -189,13 +189,6 @@
         		</includes>
         	</resource>
         </resources>
-        <extensions>
-    		<extension>
-      			<groupId>ar.com.synergian</groupId>
-          		<artifactId>wagon-git</artifactId>
-          		<version>0.1.4</version>
-   			 </extension>
-  		</extensions>
   </build>
   <repositories>
         <repository>
@@ -204,10 +197,6 @@
             <name>BukkitDev</name>
             <url>http://www.gestdown.info:8888/nexus/content/groups/BukkitDev/</url>
         </repository>
-        <repository>
-    		<id>synergian-repo</id>
-    		<url>https://raw.github.com/synergian/wagon-git/releases</url>
-  		</repository>
     </repositories>
     <pluginRepositories>
         <pluginRepository>
@@ -216,16 +205,6 @@
             <name>BukkitDev</name>
             <url>http://www.gestdown.info:8888/nexus/content/groups/BukkitDev/</url>
         </pluginRepository>
-        <pluginRepository>
-                        <id>synergian-repo</id>
-                        <url>https://raw.github.com/synergian/wagon-git/releases</url>
-                        <releases>
-                                <enabled>true</enabled>
-                        </releases>
-                        <snapshots>
-                                <enabled>false</enabled>
-                        </snapshots>
-                </pluginRepository>
     </pluginRepositories>
 <distributionManagement>
         <!-- Publish the versioned releases here -->
@@ -241,10 +220,6 @@
             <name>Bukkit Plugins Snapshot</name>
             <url>http://www.gestdown.info:8888/nexus/content/repositories/bukkit-plugin-snapshot/</url>
         </snapshotRepository>
-        <site>
-    		<id>your-repo-id</id>
-        	<url>git:gh-pages://git@github.com:Lathanael/BinaryFileDB.git</url>
-  		</site>
     </distributionManagement>
   <dependencies>
      <dependency>
@@ -261,11 +236,6 @@
             <type>jar</type>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-      			<groupId>ar.com.synergian</groupId>
-          		<artifactId>wagon-git</artifactId>
-          		<version>0.1.4</version>
-   		</dependency>
   </dependencies>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
