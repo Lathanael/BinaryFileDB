@@ -4,6 +4,7 @@
   <artifactId>BinaryFileDB</artifactId>
   <version>1.0-SNAPSHOT</version>
   <name>BinaryFileDB</name>
+  <url>https://Lathanael@github.com/Lathanael/BinaryFileDB.git</url>
   <scm>
         <connection>scm:git:git@github.com:Lathanael/BinaryFileDB.git</connection>
         <url>scm:git:git@github.com:Lathanael/BinaryFileDB.git</url>
@@ -54,6 +55,23 @@
                 </configuration>
             </plugin>
 
+			<plugin>
+				<groupId>com.github.github</groupId>
+				<artifactId>site-maven-plugin</artifactId>
+				<version>0.5</version>
+				<configuration>
+					<message>Building site for ${project.version}</message>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>site</goal>
+						</goals>
+						<phase>site</phase>
+					</execution>
+				</executions>
+			</plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -98,6 +116,15 @@
                                 </reportSet>
                             </reportSets>
                         </plugin>
+                        <plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-project-info-reports-plugin</artifactId>
+							<version>2.2</version>
+							<configuration>
+								<dependencyDetailsEnabled>true</dependencyDetailsEnabled>
+								<dependencyLocationsEnabled>true</dependencyLocationsEnabled>
+							</configuration>
+						</plugin>
                     </reportPlugins>
                 </configuration>
             </plugin>
