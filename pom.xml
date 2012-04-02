@@ -7,6 +7,7 @@
 	<version>1.0-SNAPSHOT</version>
 	<name>BinaryFileDB</name>
 	<url>https://github.com/Lathanael/BinaryFileDB</url>
+	<description>A database project targeted to low-level database usage with binary files.</description>
 	<inceptionYear>2012</inceptionYear>
 	<organization>
 		<name>Lathanael</name>
@@ -14,9 +15,15 @@
 	</organization>
 	<scm>
 		<connection>scm:git:git@github.com:Lathanael/BinaryFileDB.git</connection>
-		<url>scm:git:git@github.com:Lathanael/BinaryFileDB.git</url>
+		<url>https://github.com/Lathanael/BinaryFileDB</url>
 		<developerConnection>scm:git:git@github.com:Lathanael/BinaryFileDB.git</developerConnection>
 	</scm>
+	<licenses>
+		<license>
+			<name>GNU GPL v3</name>
+			<url>http://www.gnu.org/licenses/gpl.txt</url>
+		</license>
+	</licenses>
 	<build>
 		<plugins>
 			<plugin>
