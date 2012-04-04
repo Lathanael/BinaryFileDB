@@ -79,9 +79,6 @@
 				<version>0.5</version>
 				<configuration>
 					<message>Building site for ${project.version}</message>
-					<excludes>
-						<exclude>xref</exclude>
-					</excludes>
 				</configuration>
 				<executions>
 					<execution>
@@ -159,6 +156,7 @@
 										<report>dependencies</report>
 										<report>issue-tracking</report>
 										<report>license</report>
+										<report>project-team</report>
 									</reports>
 								</reportSet>
 							</reportSets>
@@ -290,14 +288,14 @@
 		<dependency>
 			<groupId>org.bukkit</groupId>
 			<artifactId>bukkit</artifactId>
-			<version>1.2.5-R0.1-SNAPSHOT</version>
+			<version>1.2.5-R0.2-SNAPSHOT</version>
 			<type>jar</type>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.bukkit</groupId>
 			<artifactId>craftbukkit</artifactId>
-			<version>1.2.5-R0.1-SNAPSHOT</version>
+			<version>1.2.5-R0.2-SNAPSHOT</version>
 			<type>jar</type>
 			<scope>provided</scope>
 		</dependency>

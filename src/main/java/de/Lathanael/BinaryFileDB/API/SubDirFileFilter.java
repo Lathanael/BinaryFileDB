@@ -38,7 +38,7 @@ import java.util.regex.Pattern;
  * import de.Lathanael.BinaryFileDB.API.SubDirFileFilter.PatternFilter;
  *
  * SubDirFileFilter filter = new SubDirFileFilter();
- * List<File> files = filter.getFiles(new File(""),
+ * List< File > files = filter.getFiles(new File(""),
  *                       filter.new PatternFilter(Type.ALL, ".java"),
  *                       true);
  * </pre>
