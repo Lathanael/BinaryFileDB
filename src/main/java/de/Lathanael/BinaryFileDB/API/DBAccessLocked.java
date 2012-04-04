@@ -41,6 +41,7 @@ import de.Lathanael.BinaryFileDB.Exception.RecordsFileException;
 public class DBAccessLocked {
 
 	private final RecordsFile file;
+	private long TIMESTAMP;
 	private boolean useQueue;
 	private RRWLock lock = new RRWLock();
 	private DataWriteQueue queue;
@@ -60,6 +61,7 @@ public class DBAccessLocked {
 	 * @throws RecordsFileException
 	 */
 	public DBAccessLocked (String dbPath, int initialSize) throws IOException, RecordsFileException, CacheSizeException {
+		TIMESTAMP = System.currentTimeMillis();
 		useQueue = false;
 		cacheSize = 10;
 		this.initialSize = initialSize;
@@ -76,6 +78,7 @@ public class DBAccessLocked {
 	 * @throws RecordsFileException
 	 */
 	public DBAccessLocked(String dbPath, String accessFlags) throws IOException, RecordsFileException, CacheSizeException {
+		TIMESTAMP = System.currentTimeMillis();
 		useQueue = false;
 		cacheSize = 10;
 		file = new RecordsFile(dbPath, accessFlags, cacheSize);
@@ -94,6 +97,7 @@ public class DBAccessLocked {
 	 * @throws RecordsFileException
 	 */
 	public DBAccessLocked(String path, int initialSize, boolean useQueue, int queueSize) throws IOException, RecordsFileException, CacheSizeException {
+		TIMESTAMP = System.currentTimeMillis();
 		this.useQueue = useQueue;
 		if (useQueue)
 			queue = new DataWriteQueue(queueSize);
@@ -113,6 +117,7 @@ public class DBAccessLocked {
 	 * @throws RecordsFileException
 	 */
 	public DBAccessLocked(String path, String accessFlags, boolean useQueue, int queueSize) throws IOException, RecordsFileException, CacheSizeException {
+		TIMESTAMP = System.currentTimeMillis();
 		this.useQueue = useQueue;
 		if (useQueue)
 			queue = new DataWriteQueue(queueSize);
@@ -138,6 +143,7 @@ public class DBAccessLocked {
 	 */
 	public DBAccessLocked(String dbPath, int initialSize, int MAX_KEY_LENGTH, int DATA_START_HEADER_LOCATION,
 			int FILE_HEADERS_REGION_LENGTH, int RECORD_HEADER_LENGTH) throws IOException, RecordsFileException, CacheSizeException {
+		TIMESTAMP = System.currentTimeMillis();
 		useQueue = false;
 		cacheSize = 10;
 		this.initialSize = initialSize;
@@ -167,6 +173,7 @@ public class DBAccessLocked {
 	 */
 	public DBAccessLocked(String dbPath, int initialSize, int MAX_KEY_LENGTH, int DATA_START_HEADER_LOCATION,
 			int FILE_HEADERS_REGION_LENGTH, int RECORD_HEADER_LENGTH, boolean useQueue, int queueSize) throws IOException, RecordsFileException, CacheSizeException {
+		TIMESTAMP = System.currentTimeMillis();
 		this.useQueue = useQueue;
 		if (useQueue)
 			queue = new DataWriteQueue(queueSize);
@@ -195,6 +202,7 @@ public class DBAccessLocked {
 	 */
 	public DBAccessLocked(String dbPath, String accessFlags, int MAX_KEY_LENGTH, int DATA_START_HEADER_LOCATION,
 			int FILE_HEADERS_REGION_LENGTH, int RECORD_HEADER_LENGTH) throws IOException, RecordsFileException, CacheSizeException {
+		TIMESTAMP = System.currentTimeMillis();
 		useQueue = false;
 		cacheSize = 10;
 		this.MAX_KEY_LENGTH = MAX_KEY_LENGTH;
@@ -221,6 +229,7 @@ public class DBAccessLocked {
 	 */
 	public DBAccessLocked(String dbPath, String accessFlags, int MAX_KEY_LENGTH, int DATA_START_HEADER_LOCATION,
 			int FILE_HEADERS_REGION_LENGTH, int RECORD_HEADER_LENGTH, boolean useQueue, int queueSize) throws IOException, RecordsFileException, CacheSizeException {
+		TIMESTAMP = System.currentTimeMillis();
 		this.useQueue = useQueue;
 		if (useQueue)
 			queue = new DataWriteQueue(queueSize);
@@ -245,6 +254,7 @@ public class DBAccessLocked {
 	 * @throws RecordsFileException
 	 */
 	public DBAccessLocked(String dbPath, int initialSize, int cacheSize) throws IOException, RecordsFileException, CacheSizeException {
+		TIMESTAMP = System.currentTimeMillis();
 		useQueue = false;
 		this.cacheSize = cacheSize;
 		this.initialSize = initialSize;
@@ -262,6 +272,7 @@ public class DBAccessLocked {
 	 * @throws RecordsFileException
 	 */
 	public DBAccessLocked(String path, String accessFlags, int cacheSize) throws IOException, RecordsFileException, CacheSizeException {
+		TIMESTAMP = System.currentTimeMillis();
 		useQueue = false;
 		this.cacheSize = cacheSize;
 		file = new RecordsFile(path, accessFlags, cacheSize);
@@ -281,6 +292,7 @@ public class DBAccessLocked {
 	 * @throws RecordsFileException
 	 */
 	public DBAccessLocked(String path, int initialSize, boolean useQueue, int queueSize, int cacheSize) throws IOException, RecordsFileException, CacheSizeException {
+		TIMESTAMP = System.currentTimeMillis();
 		this.useQueue = useQueue;
 		if (useQueue)
 			queue = new DataWriteQueue(queueSize);
@@ -301,6 +313,7 @@ public class DBAccessLocked {
 	 * @throws RecordsFileException
 	 */
 	public DBAccessLocked(String path, String accessFlags, boolean useQueue, int queueSize, int cacheSize) throws IOException, RecordsFileException, CacheSizeException {
+		TIMESTAMP = System.currentTimeMillis();
 		this.useQueue = useQueue;
 		if (useQueue)
 			queue = new DataWriteQueue(queueSize);
@@ -327,6 +340,7 @@ public class DBAccessLocked {
 	 */
 	public DBAccessLocked(String dbPath, int initialSize, int MAX_KEY_LENGTH, int DATA_START_HEADER_LOCATION,
 			int FILE_HEADERS_REGION_LENGTH, int RECORD_HEADER_LENGTH, int cacheSize) throws IOException, RecordsFileException, CacheSizeException {
+		TIMESTAMP = System.currentTimeMillis();
 		useQueue = false;
 		this.cacheSize = cacheSize;
 		this.initialSize = initialSize;
@@ -358,6 +372,7 @@ public class DBAccessLocked {
 	public DBAccessLocked(String dbPath, int initialSize, int MAX_KEY_LENGTH, int DATA_START_HEADER_LOCATION,
 			int FILE_HEADERS_REGION_LENGTH, int RECORD_HEADER_LENGTH, boolean useQueue, int queueSize,
 			int cacheSize) throws IOException, RecordsFileException, CacheSizeException {
+		TIMESTAMP = System.currentTimeMillis();
 		this.useQueue = useQueue;
 		if (useQueue)
 			queue = new DataWriteQueue(queueSize);
@@ -387,6 +402,7 @@ public class DBAccessLocked {
 	 */
 	public DBAccessLocked(String dbPath, String accessFlags, int MAX_KEY_LENGTH, int DATA_START_HEADER_LOCATION,
 			int FILE_HEADERS_REGION_LENGTH, int RECORD_HEADER_LENGTH, int cacheSize) throws IOException, RecordsFileException, CacheSizeException {
+		TIMESTAMP = System.currentTimeMillis();
 		useQueue = false;
 		this.cacheSize = cacheSize;
 		this.MAX_KEY_LENGTH = MAX_KEY_LENGTH;
@@ -415,6 +431,7 @@ public class DBAccessLocked {
 	public DBAccessLocked(String dbPath, String accessFlags, int MAX_KEY_LENGTH, int DATA_START_HEADER_LOCATION,
 			int FILE_HEADERS_REGION_LENGTH, int RECORD_HEADER_LENGTH, boolean useQueue, int queueSize,
 			int cacheSize) throws IOException, RecordsFileException, CacheSizeException {
+		TIMESTAMP = System.currentTimeMillis();
 		this.useQueue = useQueue;
 		if (useQueue)
 			queue = new DataWriteQueue(queueSize);
@@ -564,6 +581,7 @@ public class DBAccessLocked {
 						throw new QueueException("Could not add Item to the queue");
 				}
 				file.removeFromCache(rw.getKey());
+				updateTimeStamp();
 			} else {
 				if (file.recordExists(rw.getKey()))
 					file.updateRecord(rw);
@@ -572,6 +590,7 @@ public class DBAccessLocked {
 				else
 					file.insertRecord(rw);
 				file.removeFromCache(rw.getKey());
+				updateTimeStamp();
 			}
 		} finally {
 			lock.releaseWriteLock();
@@ -608,9 +627,14 @@ public class DBAccessLocked {
 						throw new QueueException("Could not add Item to the queue");
 				}
 				file.removeFromCache(rw.getKey());
+				updateTimeStamp();
 			} else {
-				file.quickInsertRecord(rw);
+				if (file.recordExists(rw.getKey()))
+					file.updateRecord(rw);
+				else
+					file.insertRecord(rw);
 				file.removeFromCache(rw.getKey());
+				updateTimeStamp();
 			}
 		} finally {
 			lock.releaseWriteLock();
@@ -632,6 +656,7 @@ public class DBAccessLocked {
 			else
 				file.insertRecord(rw);
 			file.removeFromCache(rw.getKey());
+			updateTimeStamp();
 		} finally {
 			lock.releaseWriteLock();
 		}
@@ -653,6 +678,7 @@ public class DBAccessLocked {
 			else
 				file.quickInsertRecord(rw);
 			file.removeFromCache(rw.getKey());
+			updateTimeStamp();
 		} finally {
 			lock.releaseWriteLock();
 		}
@@ -673,9 +699,24 @@ public class DBAccessLocked {
 				queue.removeQueuedItem(key);
 			file.deleteRecord(key);
 			file.removeFromCache(key);
+			updateTimeStamp();
 		} finally {
 			lock.releaseWriteLock();
 		}
+	}
+
+	/**
+	 * Gets the TIMESTAMP when this instance was created or last modified.
+	 */
+	public long getTimeStamp() {
+		return TIMESTAMP;
+	}
+
+	/**
+	 * Sets the TIMESTAMP to the current System-time, indicating the file was changed.
+	 */
+	private void updateTimeStamp() {
+		TIMESTAMP = System.currentTimeMillis();
 	}
 
 	/**
