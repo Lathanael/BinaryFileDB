@@ -1,5 +1,6 @@
 name: BinaryFileDB
 main: de.Lathanael.BinaryFileDB.bukkit.Main
-version ${project.version} (BUILD ${git.build.time})
+version: ${project.version} (BUILD ${git.build.time})
 author: Lathanael
+load: STARTUP
 description: Simple wrapper to create a FileDB for binary data without using SQL etc
