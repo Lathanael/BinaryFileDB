@@ -79,7 +79,7 @@ public class DataWriteQueue {
 	public boolean addToQueue(RecordWriter rw) {
 		if (counter < size) {
 			Object o;
-			 o = queue.put(rw.getKey(), rw);
+			o = queue.put(rw.getKey(), rw);
 			if (o != null) {
 				return true;
 			} else {
