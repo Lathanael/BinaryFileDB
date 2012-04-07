@@ -211,10 +211,13 @@ public abstract class BaseRecordsFile {
 	/**
 	 * Creates a file and if necessary all parent directories.
 	 * @param dbFile - The file which needs to be created
-	 * @throws IOException
 	 * @return {@code true} if file could be created, otherwise {@code false}
+	 * @throws RecordsFileException
+	 * @throws IOException
 	 */
-	private boolean createFile(File dbFile) throws IOException {
+	private boolean createFile(File dbFile) throws IOException, RecordsFileException {
+		if (dbFile.isDirectory())
+			throw new RecordsFileException("File can not be a directory: " + dbFile.getPath());
 		dbFile.mkdirs();
 		return dbFile.createNewFile();
 	}
