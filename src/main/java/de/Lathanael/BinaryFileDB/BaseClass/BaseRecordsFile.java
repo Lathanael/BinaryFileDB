@@ -100,10 +100,7 @@ public abstract class BaseRecordsFile {
 		RECORD_HEADER_LENGTH = 16;
 		MAX_KEY_LENGTH = 64;
 		INDEX_ENTRY_LENGTH = MAX_KEY_LENGTH + RECORD_HEADER_LENGTH;
-		File f = new File(dbPath);
-		if (f.exists()) {
-			throw new RecordsFileException("Database already exits: " + dbPath);
-		}
+		File f = sanityCheck(dbPath, true, true);
 		file = new RandomAccessFile(f, "rw");
 		dataStartPtr = indexPositionToEntryFp(initialSize);	// Record Data Region starts were the
 		setFileLength(dataStartPtr);						// (i+1)th index entry would start.
@@ -130,10 +127,7 @@ public abstract class BaseRecordsFile {
 		this.RECORD_HEADER_LENGTH = RECORD_HEADER_LENGTH;
 		this.MAX_KEY_LENGTH = MAX_KEY_LENGTH;
 		this.INDEX_ENTRY_LENGTH = MAX_KEY_LENGTH + RECORD_HEADER_LENGTH;
-		File f = new File(dbPath);
-		if (f.exists()) {
-			throw new RecordsFileException("Database already exits: " + dbPath);
-		}
+		File f = sanityCheck(dbPath, true, true);
 		file = new RandomAccessFile(f, "rw");
 		dataStartPtr = indexPositionToEntryFp(initialSize);	// Record Data Region starts were the
 		setFileLength(dataStartPtr);						// (i+1)th index entry would start.
@@ -155,10 +149,7 @@ public abstract class BaseRecordsFile {
 		RECORD_HEADER_LENGTH = 16;
 		MAX_KEY_LENGTH = 64;
 		INDEX_ENTRY_LENGTH = MAX_KEY_LENGTH + RECORD_HEADER_LENGTH;
-		File f = new File (dbPath);
-		if(!f.exists()) {
-			throw new RecordsFileException("Database not found: " + dbPath);
-		}
+		File f = sanityCheck(dbPath, false, true);
 		file = new RandomAccessFile(f, accessFlags);
 		dataStartPtr = readDataStartHeader();
 	}
@@ -183,12 +174,49 @@ public abstract class BaseRecordsFile {
 		this.RECORD_HEADER_LENGTH = RECORD_HEADER_LENGTH;
 		this.MAX_KEY_LENGTH = MAX_KEY_LENGTH;
 		this.INDEX_ENTRY_LENGTH = MAX_KEY_LENGTH + RECORD_HEADER_LENGTH;
-		File f = new File(dbPath);
-		if (f.exists()) {
-			throw new RecordsFileException("Database already exits: " + dbPath);
-		}
+		File f = sanityCheck(dbPath, false, true);
 		file = new RandomAccessFile(f, accessFlags);
 		dataStartPtr = readDataStartHeader();
+	}
+
+	/**
+	 * Checks if a file exists. If {@code create} is set to true and the file does not exist</br>
+	 * it will try to create all necessary dirs and the file.
+	 * @param dbPath - The path to the file
+	 * @param create - If {@code true} creates the file plus dirs if it does not exist
+	 * @param errorMsg - throws a RecordsFileException if the file already exists
+	 * @throws RecordsFileException
+	 * @throws IOException
+	 * @return The file if successfully created
+	 */
+	private File sanityCheck(String dbPath, boolean create, boolean errorMsg) throws RecordsFileException, IOException {
+		if (dbPath == null)
+			throw new RecordsFileException("Path can not be null");
+		File f = new File(dbPath);
+		if (create) {
+			if (f.exists() && errorMsg)
+				throw new RecordsFileException("Database already exists: " + dbPath);
+			if (createFile(f))
+				return f;
+			else
+				throw new RecordsFileException("Failed to create database file at: " + dbPath);
+		} else if (!create) {
+			if (!f.exists() && errorMsg)
+				throw new RecordsFileException("Database not found: " + dbPath);
+			return f;
+		}
+		return f;
+	}
+
+	/**
+	 * Creates a file and if necessary all parent directories.
+	 * @param dbFile - The file which needs to be created
+	 * @throws IOException
+	 * @return {@code true} if file could be created, otherwise {@code false}
+	 */
+	private boolean createFile(File dbFile) throws IOException {
+		dbFile.mkdirs();
+		return dbFile.createNewFile();
 	}
 
 	/**
