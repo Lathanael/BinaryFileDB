@@ -103,441 +103,469 @@
 <FONT color="green">100</FONT>                    RECORD_HEADER_LENGTH = 16;<a name="line.100"></a>
 <FONT color="green">101</FONT>                    MAX_KEY_LENGTH = 64;<a name="line.101"></a>
 <FONT color="green">102</FONT>                    INDEX_ENTRY_LENGTH = MAX_KEY_LENGTH + RECORD_HEADER_LENGTH;<a name="line.102"></a>
-<FONT color="green">103</FONT>                    File f = new File(dbPath);<a name="line.103"></a>
-<FONT color="green">104</FONT>                    if (f.exists()) {<a name="line.104"></a>
-<FONT color="green">105</FONT>                            throw new RecordsFileException("Database already exits: " + dbPath);<a name="line.105"></a>
-<FONT color="green">106</FONT>                    }<a name="line.106"></a>
-<FONT color="green">107</FONT>                    file = new RandomAccessFile(f, "rw");<a name="line.107"></a>
-<FONT color="green">108</FONT>                    dataStartPtr = indexPositionToEntryFp(initialSize);     // Record Data Region starts were the<a name="line.108"></a>
-<FONT color="green">109</FONT>                    setFileLength(dataStartPtr);                                            // (i+1)th index entry would start.<a name="line.109"></a>
-<FONT color="green">110</FONT>                    writeNumRecordsHeader(0);<a name="line.110"></a>
-<FONT color="green">111</FONT>                    writeDataStartPtrHeader(dataStartPtr);<a name="line.111"></a>
-<FONT color="green">112</FONT>            }<a name="line.112"></a>
-<FONT color="green">113</FONT>    <a name="line.113"></a>
-<FONT color="green">114</FONT>            /**<a name="line.114"></a>
-<FONT color="green">115</FONT>             * Creates a new database file, initializing the appropriate headers. Enough space is allocated in&lt;/br&gt;<a name="line.115"></a>
-<FONT color="green">116</FONT>             * the index for the specified initial size. The user can define the lenghts of key, header etc!<a name="line.116"></a>
-<FONT color="green">117</FONT>             * @param dbPath - Pathname where the file is located as a String<a name="line.117"></a>
-<FONT color="green">118</FONT>             * @param initialSize - Size of the db created<a name="line.118"></a>
-<FONT color="green">119</FONT>             * @param MAX_KEY_LENGTH - {@link de.Lathanael.BinaryFileDB.BaseClass.BaseRecordsFile#MAX_KEY_LENGTH MAX_KEY_LENGTH}<a name="line.119"></a>
-<FONT color="green">120</FONT>             * @param DATA_START_HEADER_LOCATION - {@link de.Lathanael.BinaryFileDB.BaseClass.BaseRecordsFile#DATA_START_HEADER_LOCATION DATA_START_HEADER_LOCATION}<a name="line.120"></a>
-<FONT color="green">121</FONT>             * @param FILE_HEADERS_REGION_LENGTH - {@link de.Lathanael.BinaryFileDB.BaseClass.BaseRecordsFile#FILE_HEADERS_REGION_LENGTH FILE_HEADERS_REGION_LENGTH}<a name="line.121"></a>
-<FONT color="green">122</FONT>             * @param RECORD_HEADER_LENGTH {@link de.Lathanael.BinaryFileDB.BaseClass.BaseRecordsFile#RECORD_HEADER_LENGTH RECORD_HEADER_LENGTH}<a name="line.122"></a>
-<FONT color="green">123</FONT>             * @throws IOException<a name="line.123"></a>
-<FONT color="green">124</FONT>             * @throws RecordsFileException<a name="line.124"></a>
-<FONT color="green">125</FONT>             */<a name="line.125"></a>
-<FONT color="green">126</FONT>            protected BaseRecordsFile(String dbPath, int initialSize, int MAX_KEY_LENGTH, int DATA_START_HEADER_LOCATION,<a name="line.126"></a>
-<FONT color="green">127</FONT>                            int FILE_HEADERS_REGION_LENGTH, int RECORD_HEADER_LENGTH) throws IOException, RecordsFileException {<a name="line.127"></a>
-<FONT color="green">128</FONT>                    this.DATA_START_HEADER_LOCATION = DATA_START_HEADER_LOCATION;<a name="line.128"></a>
-<FONT color="green">129</FONT>                    this.FILE_HEADERS_REGION_LENGTH = FILE_HEADERS_REGION_LENGTH;<a name="line.129"></a>
-<FONT color="green">130</FONT>                    this.RECORD_HEADER_LENGTH = RECORD_HEADER_LENGTH;<a name="line.130"></a>
-<FONT color="green">131</FONT>                    this.MAX_KEY_LENGTH = MAX_KEY_LENGTH;<a name="line.131"></a>
-<FONT color="green">132</FONT>                    this.INDEX_ENTRY_LENGTH = MAX_KEY_LENGTH + RECORD_HEADER_LENGTH;<a name="line.132"></a>
-<FONT color="green">133</FONT>                    File f = new File(dbPath);<a name="line.133"></a>
-<FONT color="green">134</FONT>                    if (f.exists()) {<a name="line.134"></a>
-<FONT color="green">135</FONT>                            throw new RecordsFileException("Database already exits: " + dbPath);<a name="line.135"></a>
-<FONT color="green">136</FONT>                    }<a name="line.136"></a>
-<FONT color="green">137</FONT>                    file = new RandomAccessFile(f, "rw");<a name="line.137"></a>
-<FONT color="green">138</FONT>                    dataStartPtr = indexPositionToEntryFp(initialSize);     // Record Data Region starts were the<a name="line.138"></a>
-<FONT color="green">139</FONT>                    setFileLength(dataStartPtr);                                            // (i+1)th index entry would start.<a name="line.139"></a>
-<FONT color="green">140</FONT>                    writeNumRecordsHeader(0);<a name="line.140"></a>
-<FONT color="green">141</FONT>                    writeDataStartPtrHeader(dataStartPtr);<a name="line.141"></a>
-<FONT color="green">142</FONT>            }<a name="line.142"></a>
-<FONT color="green">143</FONT>    <a name="line.143"></a>
-<FONT color="green">144</FONT>            /**<a name="line.144"></a>
-<FONT color="green">145</FONT>             * Opens an existing database file and initializes the dataStartPtr. The accessFlags&lt;/br&gt;<a name="line.145"></a>
-<FONT color="green">146</FONT>             * parameter can be "r" or "rw" -- as defined in RandomAccessFile.<a name="line.146"></a>
-<FONT color="green">147</FONT>             * @param dbPath - Pathname where the file is located as a String<a name="line.147"></a>
-<FONT color="green">148</FONT>             * @param accessFlags - Whether the new DBFile should hava read-only "r" or read/write "rw" access<a name="line.148"></a>
-<FONT color="green">149</FONT>             * @throws IOException<a name="line.149"></a>
-<FONT color="green">150</FONT>             * @throws RecordsFileException<a name="line.150"></a>
-<FONT color="green">151</FONT>             */<a name="line.151"></a>
-<FONT color="green">152</FONT>            protected BaseRecordsFile(String dbPath, String accessFlags) throws IOException, RecordsFileException {<a name="line.152"></a>
-<FONT color="green">153</FONT>                    DATA_START_HEADER_LOCATION = 4;<a name="line.153"></a>
-<FONT color="green">154</FONT>                    FILE_HEADERS_REGION_LENGTH = 16;<a name="line.154"></a>
-<FONT color="green">155</FONT>                    RECORD_HEADER_LENGTH = 16;<a name="line.155"></a>
-<FONT color="green">156</FONT>                    MAX_KEY_LENGTH = 64;<a name="line.156"></a>
-<FONT color="green">157</FONT>                    INDEX_ENTRY_LENGTH = MAX_KEY_LENGTH + RECORD_HEADER_LENGTH;<a name="line.157"></a>
-<FONT color="green">158</FONT>                    File f = new File (dbPath);<a name="line.158"></a>
-<FONT color="green">159</FONT>                    if(!f.exists()) {<a name="line.159"></a>
-<FONT color="green">160</FONT>                            throw new RecordsFileException("Database not found: " + dbPath);<a name="line.160"></a>
-<FONT color="green">161</FONT>                    }<a name="line.161"></a>
-<FONT color="green">162</FONT>                    file = new RandomAccessFile(f, accessFlags);<a name="line.162"></a>
-<FONT color="green">163</FONT>                    dataStartPtr = readDataStartHeader();<a name="line.163"></a>
-<FONT color="green">164</FONT>            }<a name="line.164"></a>
-<FONT color="green">165</FONT>    <a name="line.165"></a>
-<FONT color="green">166</FONT>            /**<a name="line.166"></a>
-<FONT color="green">167</FONT>             * Opens an existing database file and initializes the dataStartPtr. The accessFlags&lt;/br&gt;<a name="line.167"></a>
-<FONT color="green">168</FONT>             * parameter can be "r" or "rw" -- as defined in RandomAccessFile. Lets the user define the&lt;/br&gt;<a name="line.168"></a>
-<FONT color="green">169</FONT>             * lengths of key, header etc.<a name="line.169"></a>
-<FONT color="green">170</FONT>             * @param dbPath - Pathname where the file is located as a String<a name="line.170"></a>
-<FONT color="green">171</FONT>             * @param accessFlags - Whether the new DBFile should hava read-only "r" or read/write "rw" access<a name="line.171"></a>
-<FONT color="green">172</FONT>             * @param MAX_KEY_LENGTH - {@link de.Lathanael.BinaryFileDB.BaseClass.BaseRecordsFile#MAX_KEY_LENGTH MAX_KEY_LENGTH}<a name="line.172"></a>
-<FONT color="green">173</FONT>             * @param DATA_START_HEADER_LOCATION - {@link de.Lathanael.BinaryFileDB.BaseClass.BaseRecordsFile#DATA_START_HEADER_LOCATION DATA_START_HEADER_LOCATION}<a name="line.173"></a>
-<FONT color="green">174</FONT>             * @param FILE_HEADERS_REGION_LENGTH - {@link de.Lathanael.BinaryFileDB.BaseClass.BaseRecordsFile#FILE_HEADERS_REGION_LENGTH FILE_HEADERS_REGION_LENGTH}<a name="line.174"></a>
-<FONT color="green">175</FONT>             * @param RECORD_HEADER_LENGTH {@link de.Lathanael.BinaryFileDB.BaseClass.BaseRecordsFile#RECORD_HEADER_LENGTH RECORD_HEADER_LENGTH}<a name="line.175"></a>
-<FONT color="green">176</FONT>             * @throws IOException<a name="line.176"></a>
-<FONT color="green">177</FONT>             * @throws RecordsFileException<a name="line.177"></a>
-<FONT color="green">178</FONT>             */<a name="line.178"></a>
-<FONT color="green">179</FONT>            protected BaseRecordsFile(String dbPath, String accessFlags, int MAX_KEY_LENGTH, int DATA_START_HEADER_LOCATION,<a name="line.179"></a>
-<FONT color="green">180</FONT>                            int FILE_HEADERS_REGION_LENGTH, int RECORD_HEADER_LENGTH) throws IOException, RecordsFileException {<a name="line.180"></a>
-<FONT color="green">181</FONT>                    this.DATA_START_HEADER_LOCATION = DATA_START_HEADER_LOCATION;<a name="line.181"></a>
-<FONT color="green">182</FONT>                    this.FILE_HEADERS_REGION_LENGTH = FILE_HEADERS_REGION_LENGTH;<a name="line.182"></a>
-<FONT color="green">183</FONT>                    this.RECORD_HEADER_LENGTH = RECORD_HEADER_LENGTH;<a name="line.183"></a>
-<FONT color="green">184</FONT>                    this.MAX_KEY_LENGTH = MAX_KEY_LENGTH;<a name="line.184"></a>
-<FONT color="green">185</FONT>                    this.INDEX_ENTRY_LENGTH = MAX_KEY_LENGTH + RECORD_HEADER_LENGTH;<a name="line.185"></a>
-<FONT color="green">186</FONT>                    File f = new File(dbPath);<a name="line.186"></a>
-<FONT color="green">187</FONT>                    if (f.exists()) {<a name="line.187"></a>
-<FONT color="green">188</FONT>                            throw new RecordsFileException("Database already exits: " + dbPath);<a name="line.188"></a>
-<FONT color="green">189</FONT>                    }<a name="line.189"></a>
-<FONT color="green">190</FONT>                    file = new RandomAccessFile(f, accessFlags);<a name="line.190"></a>
-<FONT color="green">191</FONT>                    dataStartPtr = readDataStartHeader();<a name="line.191"></a>
-<FONT color="green">192</FONT>            }<a name="line.192"></a>
-<FONT color="green">193</FONT>    <a name="line.193"></a>
-<FONT color="green">194</FONT>            /**<a name="line.194"></a>
-<FONT color="green">195</FONT>             * Returns an Enumeration of the keys of all records in the database.<a name="line.195"></a>
-<FONT color="green">196</FONT>             */<a name="line.196"></a>
-<FONT color="green">197</FONT>            public abstract Enumeration&lt;?&gt; enumerateKeys();<a name="line.197"></a>
-<FONT color="green">198</FONT>    <a name="line.198"></a>
-<FONT color="green">199</FONT>            /**<a name="line.199"></a>
-<FONT color="green">200</FONT>             * Returns the number or records in the database.<a name="line.200"></a>
-<FONT color="green">201</FONT>             */<a name="line.201"></a>
-<FONT color="green">202</FONT>            public abstract int getNumRecords();<a name="line.202"></a>
-<FONT color="green">203</FONT>    <a name="line.203"></a>
-<FONT color="green">204</FONT>            /**<a name="line.204"></a>
-<FONT color="green">205</FONT>             * Checks there is a record with the given key.<a name="line.205"></a>
-<FONT color="green">206</FONT>             */<a name="line.206"></a>
-<FONT color="green">207</FONT>            public abstract boolean recordExists(String key);<a name="line.207"></a>
-<FONT color="green">208</FONT>    <a name="line.208"></a>
-<FONT color="green">209</FONT>            /**<a name="line.209"></a>
-<FONT color="green">210</FONT>             * Maps a key to a record header.<a name="line.210"></a>
-<FONT color="green">211</FONT>             * @throws RecordsFileException<a name="line.211"></a>
-<FONT color="green">212</FONT>             */<a name="line.212"></a>
-<FONT color="green">213</FONT>            protected abstract IndexEntry keyToIndexEntry(String key) throws RecordsFileException;<a name="line.213"></a>
-<FONT color="green">214</FONT>    <a name="line.214"></a>
-<FONT color="green">215</FONT>            /**<a name="line.215"></a>
-<FONT color="green">216</FONT>             * Locates space for a new record of dataLength size and initializes a IndexEntry.<a name="line.216"></a>
-<FONT color="green">217</FONT>             * @throws RecordsFileException<a name="line.217"></a>
-<FONT color="green">218</FONT>             * @throws IOException<a name="line.218"></a>
-<FONT color="green">219</FONT>             */<a name="line.219"></a>
-<FONT color="green">220</FONT>            protected abstract IndexEntry allocateRecord(String key, int dataLength) throws RecordsFileException, IOException;<a name="line.220"></a>
+<FONT color="green">103</FONT>                    File f = sanityCheck(dbPath, true, true);<a name="line.103"></a>
+<FONT color="green">104</FONT>                    file = new RandomAccessFile(f, "rw");<a name="line.104"></a>
+<FONT color="green">105</FONT>                    dataStartPtr = indexPositionToEntryFp(initialSize);     // Record Data Region starts were the<a name="line.105"></a>
+<FONT color="green">106</FONT>                    setFileLength(dataStartPtr);                                            // (i+1)th index entry would start.<a name="line.106"></a>
+<FONT color="green">107</FONT>                    writeNumRecordsHeader(0);<a name="line.107"></a>
+<FONT color="green">108</FONT>                    writeDataStartPtrHeader(dataStartPtr);<a name="line.108"></a>
+<FONT color="green">109</FONT>            }<a name="line.109"></a>
+<FONT color="green">110</FONT>    <a name="line.110"></a>
+<FONT color="green">111</FONT>            /**<a name="line.111"></a>
+<FONT color="green">112</FONT>             * Creates a new database file, initializing the appropriate headers. Enough space is allocated in&lt;/br&gt;<a name="line.112"></a>
+<FONT color="green">113</FONT>             * the index for the specified initial size. The user can define the lenghts of key, header etc!<a name="line.113"></a>
+<FONT color="green">114</FONT>             * @param dbPath - Pathname where the file is located as a String<a name="line.114"></a>
+<FONT color="green">115</FONT>             * @param initialSize - Size of the db created<a name="line.115"></a>
+<FONT color="green">116</FONT>             * @param MAX_KEY_LENGTH - {@link de.Lathanael.BinaryFileDB.BaseClass.BaseRecordsFile#MAX_KEY_LENGTH MAX_KEY_LENGTH}<a name="line.116"></a>
+<FONT color="green">117</FONT>             * @param DATA_START_HEADER_LOCATION - {@link de.Lathanael.BinaryFileDB.BaseClass.BaseRecordsFile#DATA_START_HEADER_LOCATION DATA_START_HEADER_LOCATION}<a name="line.117"></a>
+<FONT color="green">118</FONT>             * @param FILE_HEADERS_REGION_LENGTH - {@link de.Lathanael.BinaryFileDB.BaseClass.BaseRecordsFile#FILE_HEADERS_REGION_LENGTH FILE_HEADERS_REGION_LENGTH}<a name="line.118"></a>
+<FONT color="green">119</FONT>             * @param RECORD_HEADER_LENGTH {@link de.Lathanael.BinaryFileDB.BaseClass.BaseRecordsFile#RECORD_HEADER_LENGTH RECORD_HEADER_LENGTH}<a name="line.119"></a>
+<FONT color="green">120</FONT>             * @throws IOException<a name="line.120"></a>
+<FONT color="green">121</FONT>             * @throws RecordsFileException<a name="line.121"></a>
+<FONT color="green">122</FONT>             */<a name="line.122"></a>
+<FONT color="green">123</FONT>            protected BaseRecordsFile(String dbPath, int initialSize, int MAX_KEY_LENGTH, int DATA_START_HEADER_LOCATION,<a name="line.123"></a>
+<FONT color="green">124</FONT>                            int FILE_HEADERS_REGION_LENGTH, int RECORD_HEADER_LENGTH) throws IOException, RecordsFileException {<a name="line.124"></a>
+<FONT color="green">125</FONT>                    this.DATA_START_HEADER_LOCATION = DATA_START_HEADER_LOCATION;<a name="line.125"></a>
+<FONT color="green">126</FONT>                    this.FILE_HEADERS_REGION_LENGTH = FILE_HEADERS_REGION_LENGTH;<a name="line.126"></a>
+<FONT color="green">127</FONT>                    this.RECORD_HEADER_LENGTH = RECORD_HEADER_LENGTH;<a name="line.127"></a>
+<FONT color="green">128</FONT>                    this.MAX_KEY_LENGTH = MAX_KEY_LENGTH;<a name="line.128"></a>
+<FONT color="green">129</FONT>                    this.INDEX_ENTRY_LENGTH = MAX_KEY_LENGTH + RECORD_HEADER_LENGTH;<a name="line.129"></a>
+<FONT color="green">130</FONT>                    File f = sanityCheck(dbPath, true, true);<a name="line.130"></a>
+<FONT color="green">131</FONT>                    file = new RandomAccessFile(f, "rw");<a name="line.131"></a>
+<FONT color="green">132</FONT>                    dataStartPtr = indexPositionToEntryFp(initialSize);     // Record Data Region starts were the<a name="line.132"></a>
+<FONT color="green">133</FONT>                    setFileLength(dataStartPtr);                                            // (i+1)th index entry would start.<a name="line.133"></a>
+<FONT color="green">134</FONT>                    writeNumRecordsHeader(0);<a name="line.134"></a>
+<FONT color="green">135</FONT>                    writeDataStartPtrHeader(dataStartPtr);<a name="line.135"></a>
+<FONT color="green">136</FONT>            }<a name="line.136"></a>
+<FONT color="green">137</FONT>    <a name="line.137"></a>
+<FONT color="green">138</FONT>            /**<a name="line.138"></a>
+<FONT color="green">139</FONT>             * Opens an existing database file and initializes the dataStartPtr. The accessFlags&lt;/br&gt;<a name="line.139"></a>
+<FONT color="green">140</FONT>             * parameter can be "r" or "rw" -- as defined in RandomAccessFile.<a name="line.140"></a>
+<FONT color="green">141</FONT>             * @param dbPath - Pathname where the file is located as a String<a name="line.141"></a>
+<FONT color="green">142</FONT>             * @param accessFlags - Whether the new DBFile should hava read-only "r" or read/write "rw" access<a name="line.142"></a>
+<FONT color="green">143</FONT>             * @throws IOException<a name="line.143"></a>
+<FONT color="green">144</FONT>             * @throws RecordsFileException<a name="line.144"></a>
+<FONT color="green">145</FONT>             */<a name="line.145"></a>
+<FONT color="green">146</FONT>            protected BaseRecordsFile(String dbPath, String accessFlags) throws IOException, RecordsFileException {<a name="line.146"></a>
+<FONT color="green">147</FONT>                    DATA_START_HEADER_LOCATION = 4;<a name="line.147"></a>
+<FONT color="green">148</FONT>                    FILE_HEADERS_REGION_LENGTH = 16;<a name="line.148"></a>
+<FONT color="green">149</FONT>                    RECORD_HEADER_LENGTH = 16;<a name="line.149"></a>
+<FONT color="green">150</FONT>                    MAX_KEY_LENGTH = 64;<a name="line.150"></a>
+<FONT color="green">151</FONT>                    INDEX_ENTRY_LENGTH = MAX_KEY_LENGTH + RECORD_HEADER_LENGTH;<a name="line.151"></a>
+<FONT color="green">152</FONT>                    File f = sanityCheck(dbPath, false, true);<a name="line.152"></a>
+<FONT color="green">153</FONT>                    file = new RandomAccessFile(f, accessFlags);<a name="line.153"></a>
+<FONT color="green">154</FONT>                    dataStartPtr = readDataStartHeader();<a name="line.154"></a>
+<FONT color="green">155</FONT>            }<a name="line.155"></a>
+<FONT color="green">156</FONT>    <a name="line.156"></a>
+<FONT color="green">157</FONT>            /**<a name="line.157"></a>
+<FONT color="green">158</FONT>             * Opens an existing database file and initializes the dataStartPtr. The accessFlags&lt;/br&gt;<a name="line.158"></a>
+<FONT color="green">159</FONT>             * parameter can be "r" or "rw" -- as defined in RandomAccessFile. Lets the user define the&lt;/br&gt;<a name="line.159"></a>
+<FONT color="green">160</FONT>             * lengths of key, header etc.<a name="line.160"></a>
+<FONT color="green">161</FONT>             * @param dbPath - Pathname where the file is located as a String<a name="line.161"></a>
+<FONT color="green">162</FONT>             * @param accessFlags - Whether the new DBFile should hava read-only "r" or read/write "rw" access<a name="line.162"></a>
+<FONT color="green">163</FONT>             * @param MAX_KEY_LENGTH - {@link de.Lathanael.BinaryFileDB.BaseClass.BaseRecordsFile#MAX_KEY_LENGTH MAX_KEY_LENGTH}<a name="line.163"></a>
+<FONT color="green">164</FONT>             * @param DATA_START_HEADER_LOCATION - {@link de.Lathanael.BinaryFileDB.BaseClass.BaseRecordsFile#DATA_START_HEADER_LOCATION DATA_START_HEADER_LOCATION}<a name="line.164"></a>
+<FONT color="green">165</FONT>             * @param FILE_HEADERS_REGION_LENGTH - {@link de.Lathanael.BinaryFileDB.BaseClass.BaseRecordsFile#FILE_HEADERS_REGION_LENGTH FILE_HEADERS_REGION_LENGTH}<a name="line.165"></a>
+<FONT color="green">166</FONT>             * @param RECORD_HEADER_LENGTH {@link de.Lathanael.BinaryFileDB.BaseClass.BaseRecordsFile#RECORD_HEADER_LENGTH RECORD_HEADER_LENGTH}<a name="line.166"></a>
+<FONT color="green">167</FONT>             * @throws IOException<a name="line.167"></a>
+<FONT color="green">168</FONT>             * @throws RecordsFileException<a name="line.168"></a>
+<FONT color="green">169</FONT>             */<a name="line.169"></a>
+<FONT color="green">170</FONT>            protected BaseRecordsFile(String dbPath, String accessFlags, int MAX_KEY_LENGTH, int DATA_START_HEADER_LOCATION,<a name="line.170"></a>
+<FONT color="green">171</FONT>                            int FILE_HEADERS_REGION_LENGTH, int RECORD_HEADER_LENGTH) throws IOException, RecordsFileException {<a name="line.171"></a>
+<FONT color="green">172</FONT>                    this.DATA_START_HEADER_LOCATION = DATA_START_HEADER_LOCATION;<a name="line.172"></a>
+<FONT color="green">173</FONT>                    this.FILE_HEADERS_REGION_LENGTH = FILE_HEADERS_REGION_LENGTH;<a name="line.173"></a>
+<FONT color="green">174</FONT>                    this.RECORD_HEADER_LENGTH = RECORD_HEADER_LENGTH;<a name="line.174"></a>
+<FONT color="green">175</FONT>                    this.MAX_KEY_LENGTH = MAX_KEY_LENGTH;<a name="line.175"></a>
+<FONT color="green">176</FONT>                    this.INDEX_ENTRY_LENGTH = MAX_KEY_LENGTH + RECORD_HEADER_LENGTH;<a name="line.176"></a>
+<FONT color="green">177</FONT>                    File f = sanityCheck(dbPath, false, true);<a name="line.177"></a>
+<FONT color="green">178</FONT>                    file = new RandomAccessFile(f, accessFlags);<a name="line.178"></a>
+<FONT color="green">179</FONT>                    dataStartPtr = readDataStartHeader();<a name="line.179"></a>
+<FONT color="green">180</FONT>            }<a name="line.180"></a>
+<FONT color="green">181</FONT>    <a name="line.181"></a>
+<FONT color="green">182</FONT>            /**<a name="line.182"></a>
+<FONT color="green">183</FONT>             * Checks if a file exists. If {@code create} is set to true and the file does not exist&lt;/br&gt;<a name="line.183"></a>
+<FONT color="green">184</FONT>             * it will try to create all necessary dirs and the file.<a name="line.184"></a>
+<FONT color="green">185</FONT>             * @param dbPath - The path to the file<a name="line.185"></a>
+<FONT color="green">186</FONT>             * @param create - If {@code true} creates the file plus dirs if it does not exist<a name="line.186"></a>
+<FONT color="green">187</FONT>             * @param errorMsg - throws a RecordsFileException if the file already exists<a name="line.187"></a>
+<FONT color="green">188</FONT>             * @throws RecordsFileException<a name="line.188"></a>
+<FONT color="green">189</FONT>             * @throws IOException<a name="line.189"></a>
+<FONT color="green">190</FONT>             * @return The file if successfully created<a name="line.190"></a>
+<FONT color="green">191</FONT>             */<a name="line.191"></a>
+<FONT color="green">192</FONT>            private File sanityCheck(String dbPath, boolean create, boolean errorMsg) throws RecordsFileException, IOException {<a name="line.192"></a>
+<FONT color="green">193</FONT>                    if (dbPath == null)<a name="line.193"></a>
+<FONT color="green">194</FONT>                            throw new RecordsFileException("Path can not be null");<a name="line.194"></a>
+<FONT color="green">195</FONT>                    File f = new File(dbPath);<a name="line.195"></a>
+<FONT color="green">196</FONT>                    if (create) {<a name="line.196"></a>
+<FONT color="green">197</FONT>                            if (f.exists() &amp;&amp; errorMsg)<a name="line.197"></a>
+<FONT color="green">198</FONT>                                    throw new RecordsFileException("Database already exists: " + dbPath);<a name="line.198"></a>
+<FONT color="green">199</FONT>                            if (createFile(f))<a name="line.199"></a>
+<FONT color="green">200</FONT>                                    return f;<a name="line.200"></a>
+<FONT color="green">201</FONT>                            else<a name="line.201"></a>
+<FONT color="green">202</FONT>                                    throw new RecordsFileException("Failed to create database file at: " + dbPath);<a name="line.202"></a>
+<FONT color="green">203</FONT>                    } else if (!create) {<a name="line.203"></a>
+<FONT color="green">204</FONT>                            if (!f.exists() &amp;&amp; errorMsg)<a name="line.204"></a>
+<FONT color="green">205</FONT>                                    throw new RecordsFileException("Database not found: " + dbPath);<a name="line.205"></a>
+<FONT color="green">206</FONT>                            return f;<a name="line.206"></a>
+<FONT color="green">207</FONT>                    }<a name="line.207"></a>
+<FONT color="green">208</FONT>                    return f;<a name="line.208"></a>
+<FONT color="green">209</FONT>            }<a name="line.209"></a>
+<FONT color="green">210</FONT>    <a name="line.210"></a>
+<FONT color="green">211</FONT>            /**<a name="line.211"></a>
+<FONT color="green">212</FONT>             * Creates a file and if necessary all parent directories.<a name="line.212"></a>
+<FONT color="green">213</FONT>             * @param dbFile - The file which needs to be created<a name="line.213"></a>
+<FONT color="green">214</FONT>             * @throws IOException<a name="line.214"></a>
+<FONT color="green">215</FONT>             * @return {@code true} if file could be created, otherwise {@code false}<a name="line.215"></a>
+<FONT color="green">216</FONT>             */<a name="line.216"></a>
+<FONT color="green">217</FONT>            private boolean createFile(File dbFile) throws IOException {<a name="line.217"></a>
+<FONT color="green">218</FONT>                    dbFile.mkdirs();<a name="line.218"></a>
+<FONT color="green">219</FONT>                    return dbFile.createNewFile();<a name="line.219"></a>
+<FONT color="green">220</FONT>            }<a name="line.220"></a>
 <FONT color="green">221</FONT>    <a name="line.221"></a>
 <FONT color="green">222</FONT>            /**<a name="line.222"></a>
-<FONT color="green">223</FONT>             * Returns the record to which the target file pointer belongs - meaning the specified location<a name="line.223"></a>
-<FONT color="green">224</FONT>             * in the file is part of the record data of the RecordHeader which is returned. Returns null if<a name="line.224"></a>
-<FONT color="green">225</FONT>             * the location is not part of a record. (O(n) mem accesses)<a name="line.225"></a>
-<FONT color="green">226</FONT>             * @throws RecordsFileException<a name="line.226"></a>
-<FONT color="green">227</FONT>             */<a name="line.227"></a>
-<FONT color="green">228</FONT>            protected abstract IndexEntry getIndexAt(long targetFp) throws RecordsFileException;<a name="line.228"></a>
-<FONT color="green">229</FONT>    <a name="line.229"></a>
-<FONT color="green">230</FONT>            /**<a name="line.230"></a>
-<FONT color="green">231</FONT>             * Gets the length of the file associated to this DB<a name="line.231"></a>
-<FONT color="green">232</FONT>             * @throws IOException<a name="line.232"></a>
-<FONT color="green">233</FONT>             */<a name="line.233"></a>
-<FONT color="green">234</FONT>            protected long getFileLength() throws IOException {<a name="line.234"></a>
-<FONT color="green">235</FONT>                    return file.length();<a name="line.235"></a>
-<FONT color="green">236</FONT>            }<a name="line.236"></a>
-<FONT color="green">237</FONT>    <a name="line.237"></a>
-<FONT color="green">238</FONT>            /**<a name="line.238"></a>
-<FONT color="green">239</FONT>             * Sets the length of the file associated with this DB<a name="line.239"></a>
-<FONT color="green">240</FONT>             * @throws IOException<a name="line.240"></a>
-<FONT color="green">241</FONT>             */<a name="line.241"></a>
-<FONT color="green">242</FONT>            protected void setFileLength(long l) throws IOException {<a name="line.242"></a>
-<FONT color="green">243</FONT>                    file.setLength(l);<a name="line.243"></a>
-<FONT color="green">244</FONT>            }<a name="line.244"></a>
-<FONT color="green">245</FONT>    <a name="line.245"></a>
-<FONT color="green">246</FONT>            /**<a name="line.246"></a>
-<FONT color="green">247</FONT>             * Reads the number of records header from the file.<a name="line.247"></a>
-<FONT color="green">248</FONT>             * @throws IOException<a name="line.248"></a>
-<FONT color="green">249</FONT>             */<a name="line.249"></a>
-<FONT color="green">250</FONT>            protected int readNumRecordsHeader() throws IOException {<a name="line.250"></a>
-<FONT color="green">251</FONT>                    file.seek(NUM_RECORDS_HEADER_LOCATION);<a name="line.251"></a>
-<FONT color="green">252</FONT>                    return file.readInt();<a name="line.252"></a>
-<FONT color="green">253</FONT>            }<a name="line.253"></a>
-<FONT color="green">254</FONT>    <a name="line.254"></a>
-<FONT color="green">255</FONT>            /**<a name="line.255"></a>
-<FONT color="green">256</FONT>             * Writes the number of records header to the file.<a name="line.256"></a>
-<FONT color="green">257</FONT>             * @throws IOException<a name="line.257"></a>
-<FONT color="green">258</FONT>             */<a name="line.258"></a>
-<FONT color="green">259</FONT>            protected void writeNumRecordsHeader(int numRecords) throws IOException {<a name="line.259"></a>
-<FONT color="green">260</FONT>                    file.seek(NUM_RECORDS_HEADER_LOCATION);<a name="line.260"></a>
-<FONT color="green">261</FONT>                    file.writeInt(numRecords);<a name="line.261"></a>
-<FONT color="green">262</FONT>            }<a name="line.262"></a>
-<FONT color="green">263</FONT>    <a name="line.263"></a>
-<FONT color="green">264</FONT>            /**<a name="line.264"></a>
-<FONT color="green">265</FONT>             * Reads the data start pointer header from the file.<a name="line.265"></a>
-<FONT color="green">266</FONT>             */<a name="line.266"></a>
-<FONT color="green">267</FONT>            protected long readDataStartHeader() throws IOException {<a name="line.267"></a>
-<FONT color="green">268</FONT>                    file.seek(DATA_START_HEADER_LOCATION);<a name="line.268"></a>
-<FONT color="green">269</FONT>                    return file.readLong();<a name="line.269"></a>
-<FONT color="green">270</FONT>            }<a name="line.270"></a>
-<FONT color="green">271</FONT>    <a name="line.271"></a>
-<FONT color="green">272</FONT>            /**<a name="line.272"></a>
-<FONT color="green">273</FONT>             * Writes the data start pointer header to the file.<a name="line.273"></a>
-<FONT color="green">274</FONT>             * @throws IOException<a name="line.274"></a>
-<FONT color="green">275</FONT>             */<a name="line.275"></a>
-<FONT color="green">276</FONT>            protected void writeDataStartPtrHeader(long dataStartPtr) throws IOException {<a name="line.276"></a>
-<FONT color="green">277</FONT>                    file.seek(DATA_START_HEADER_LOCATION);<a name="line.277"></a>
-<FONT color="green">278</FONT>                    file.writeLong(dataStartPtr);<a name="line.278"></a>
-<FONT color="green">279</FONT>            }<a name="line.279"></a>
-<FONT color="green">280</FONT>    <a name="line.280"></a>
-<FONT color="green">281</FONT>    <a name="line.281"></a>
-<FONT color="green">282</FONT>            /**<a name="line.282"></a>
-<FONT color="green">283</FONT>             * Returns a file pointer in the index pointing to the first byte<a name="line.283"></a>
-<FONT color="green">284</FONT>             * in the key located at the given index position.<a name="line.284"></a>
-<FONT color="green">285</FONT>             */<a name="line.285"></a>
-<FONT color="green">286</FONT>            protected long indexPositionToEntryFp(int pos) {<a name="line.286"></a>
-<FONT color="green">287</FONT>                    return FILE_HEADERS_REGION_LENGTH + (INDEX_ENTRY_LENGTH * pos);<a name="line.287"></a>
-<FONT color="green">288</FONT>            }<a name="line.288"></a>
-<FONT color="green">289</FONT>    <a name="line.289"></a>
-<FONT color="green">290</FONT>            /**<a name="line.290"></a>
-<FONT color="green">291</FONT>             * Reads the ith key from the index.<a name="line.291"></a>
-<FONT color="green">292</FONT>             * @throws IOException<a name="line.292"></a>
-<FONT color="green">293</FONT>             */<a name="line.293"></a>
-<FONT color="green">294</FONT>            String readKeyFromIndex(int position) throws IOException {<a name="line.294"></a>
-<FONT color="green">295</FONT>                    file.seek(indexPositionToEntryFp(position));<a name="line.295"></a>
-<FONT color="green">296</FONT>                    return file.readUTF();<a name="line.296"></a>
-<FONT color="green">297</FONT>            }<a name="line.297"></a>
-<FONT color="green">298</FONT>    <a name="line.298"></a>
-<FONT color="green">299</FONT>            /**<a name="line.299"></a>
-<FONT color="green">300</FONT>             * Reads the ith index entry from the index.<a name="line.300"></a>
-<FONT color="green">301</FONT>             * @throws IOException<a name="line.301"></a>
-<FONT color="green">302</FONT>             */<a name="line.302"></a>
-<FONT color="green">303</FONT>            IndexEntry readEntryFromIndex(int position) throws IOException {<a name="line.303"></a>
-<FONT color="green">304</FONT>                    file.seek(position);<a name="line.304"></a>
-<FONT color="green">305</FONT>                    return IndexEntry.readEntry(file);<a name="line.305"></a>
-<FONT color="green">306</FONT>            }<a name="line.306"></a>
-<FONT color="green">307</FONT>    <a name="line.307"></a>
-<FONT color="green">308</FONT>            /**<a name="line.308"></a>
-<FONT color="green">309</FONT>             * Writes the ith index entry to the index.<a name="line.309"></a>
-<FONT color="green">310</FONT>             * @throws IOException<a name="line.310"></a>
-<FONT color="green">311</FONT>             */<a name="line.311"></a>
-<FONT color="green">312</FONT>            protected void writeEntryToIndex(IndexEntry entry) throws IOException {<a name="line.312"></a>
-<FONT color="green">313</FONT>                    file.seek(entry.indexPosition);<a name="line.313"></a>
-<FONT color="green">314</FONT>                    entry.write(file);<a name="line.314"></a>
-<FONT color="green">315</FONT>            }<a name="line.315"></a>
-<FONT color="green">316</FONT>    <a name="line.316"></a>
-<FONT color="green">317</FONT>            /**<a name="line.317"></a>
-<FONT color="green">318</FONT>             * Appends an entry to end of index. Assumes that insureIndexSpace() has already been called.<a name="line.318"></a>
-<FONT color="green">319</FONT>             * @throws RecordsFileException<a name="line.319"></a>
+<FONT color="green">223</FONT>             * Returns an Enumeration of the keys of all records in the database.<a name="line.223"></a>
+<FONT color="green">224</FONT>             */<a name="line.224"></a>
+<FONT color="green">225</FONT>            public abstract Enumeration&lt;?&gt; enumerateKeys();<a name="line.225"></a>
+<FONT color="green">226</FONT>    <a name="line.226"></a>
+<FONT color="green">227</FONT>            /**<a name="line.227"></a>
+<FONT color="green">228</FONT>             * Returns the number or records in the database.<a name="line.228"></a>
+<FONT color="green">229</FONT>             */<a name="line.229"></a>
+<FONT color="green">230</FONT>            public abstract int getNumRecords();<a name="line.230"></a>
+<FONT color="green">231</FONT>    <a name="line.231"></a>
+<FONT color="green">232</FONT>            /**<a name="line.232"></a>
+<FONT color="green">233</FONT>             * Checks there is a record with the given key.<a name="line.233"></a>
+<FONT color="green">234</FONT>             */<a name="line.234"></a>
+<FONT color="green">235</FONT>            public abstract boolean recordExists(String key);<a name="line.235"></a>
+<FONT color="green">236</FONT>    <a name="line.236"></a>
+<FONT color="green">237</FONT>            /**<a name="line.237"></a>
+<FONT color="green">238</FONT>             * Maps a key to a record header.<a name="line.238"></a>
+<FONT color="green">239</FONT>             * @throws RecordsFileException<a name="line.239"></a>
+<FONT color="green">240</FONT>             */<a name="line.240"></a>
+<FONT color="green">241</FONT>            protected abstract IndexEntry keyToIndexEntry(String key) throws RecordsFileException;<a name="line.241"></a>
+<FONT color="green">242</FONT>    <a name="line.242"></a>
+<FONT color="green">243</FONT>            /**<a name="line.243"></a>
+<FONT color="green">244</FONT>             * Locates space for a new record of dataLength size and initializes a IndexEntry.<a name="line.244"></a>
+<FONT color="green">245</FONT>             * @throws RecordsFileException<a name="line.245"></a>
+<FONT color="green">246</FONT>             * @throws IOException<a name="line.246"></a>
+<FONT color="green">247</FONT>             */<a name="line.247"></a>
+<FONT color="green">248</FONT>            protected abstract IndexEntry allocateRecord(String key, int dataLength) throws RecordsFileException, IOException;<a name="line.248"></a>
+<FONT color="green">249</FONT>    <a name="line.249"></a>
+<FONT color="green">250</FONT>            /**<a name="line.250"></a>
+<FONT color="green">251</FONT>             * Returns the record to which the target file pointer belongs - meaning the specified location<a name="line.251"></a>
+<FONT color="green">252</FONT>             * in the file is part of the record data of the RecordHeader which is returned. Returns null if<a name="line.252"></a>
+<FONT color="green">253</FONT>             * the location is not part of a record. (O(n) mem accesses)<a name="line.253"></a>
+<FONT color="green">254</FONT>             * @throws RecordsFileException<a name="line.254"></a>
+<FONT color="green">255</FONT>             */<a name="line.255"></a>
+<FONT color="green">256</FONT>            protected abstract IndexEntry getIndexAt(long targetFp) throws RecordsFileException;<a name="line.256"></a>
+<FONT color="green">257</FONT>    <a name="line.257"></a>
+<FONT color="green">258</FONT>            /**<a name="line.258"></a>
+<FONT color="green">259</FONT>             * Gets the length of the file associated to this DB<a name="line.259"></a>
+<FONT color="green">260</FONT>             * @throws IOException<a name="line.260"></a>
+<FONT color="green">261</FONT>             */<a name="line.261"></a>
+<FONT color="green">262</FONT>            protected long getFileLength() throws IOException {<a name="line.262"></a>
+<FONT color="green">263</FONT>                    return file.length();<a name="line.263"></a>
+<FONT color="green">264</FONT>            }<a name="line.264"></a>
+<FONT color="green">265</FONT>    <a name="line.265"></a>
+<FONT color="green">266</FONT>            /**<a name="line.266"></a>
+<FONT color="green">267</FONT>             * Sets the length of the file associated with this DB<a name="line.267"></a>
+<FONT color="green">268</FONT>             * @throws IOException<a name="line.268"></a>
+<FONT color="green">269</FONT>             */<a name="line.269"></a>
+<FONT color="green">270</FONT>            protected void setFileLength(long l) throws IOException {<a name="line.270"></a>
+<FONT color="green">271</FONT>                    file.setLength(l);<a name="line.271"></a>
+<FONT color="green">272</FONT>            }<a name="line.272"></a>
+<FONT color="green">273</FONT>    <a name="line.273"></a>
+<FONT color="green">274</FONT>            /**<a name="line.274"></a>
+<FONT color="green">275</FONT>             * Reads the number of records header from the file.<a name="line.275"></a>
+<FONT color="green">276</FONT>             * @throws IOException<a name="line.276"></a>
+<FONT color="green">277</FONT>             */<a name="line.277"></a>
+<FONT color="green">278</FONT>            protected int readNumRecordsHeader() throws IOException {<a name="line.278"></a>
+<FONT color="green">279</FONT>                    file.seek(NUM_RECORDS_HEADER_LOCATION);<a name="line.279"></a>
+<FONT color="green">280</FONT>                    return file.readInt();<a name="line.280"></a>
+<FONT color="green">281</FONT>            }<a name="line.281"></a>
+<FONT color="green">282</FONT>    <a name="line.282"></a>
+<FONT color="green">283</FONT>            /**<a name="line.283"></a>
+<FONT color="green">284</FONT>             * Writes the number of records header to the file.<a name="line.284"></a>
+<FONT color="green">285</FONT>             * @throws IOException<a name="line.285"></a>
+<FONT color="green">286</FONT>             */<a name="line.286"></a>
+<FONT color="green">287</FONT>            protected void writeNumRecordsHeader(int numRecords) throws IOException {<a name="line.287"></a>
+<FONT color="green">288</FONT>                    file.seek(NUM_RECORDS_HEADER_LOCATION);<a name="line.288"></a>
+<FONT color="green">289</FONT>                    file.writeInt(numRecords);<a name="line.289"></a>
+<FONT color="green">290</FONT>            }<a name="line.290"></a>
+<FONT color="green">291</FONT>    <a name="line.291"></a>
+<FONT color="green">292</FONT>            /**<a name="line.292"></a>
+<FONT color="green">293</FONT>             * Reads the data start pointer header from the file.<a name="line.293"></a>
+<FONT color="green">294</FONT>             */<a name="line.294"></a>
+<FONT color="green">295</FONT>            protected long readDataStartHeader() throws IOException {<a name="line.295"></a>
+<FONT color="green">296</FONT>                    file.seek(DATA_START_HEADER_LOCATION);<a name="line.296"></a>
+<FONT color="green">297</FONT>                    return file.readLong();<a name="line.297"></a>
+<FONT color="green">298</FONT>            }<a name="line.298"></a>
+<FONT color="green">299</FONT>    <a name="line.299"></a>
+<FONT color="green">300</FONT>            /**<a name="line.300"></a>
+<FONT color="green">301</FONT>             * Writes the data start pointer header to the file.<a name="line.301"></a>
+<FONT color="green">302</FONT>             * @throws IOException<a name="line.302"></a>
+<FONT color="green">303</FONT>             */<a name="line.303"></a>
+<FONT color="green">304</FONT>            protected void writeDataStartPtrHeader(long dataStartPtr) throws IOException {<a name="line.304"></a>
+<FONT color="green">305</FONT>                    file.seek(DATA_START_HEADER_LOCATION);<a name="line.305"></a>
+<FONT color="green">306</FONT>                    file.writeLong(dataStartPtr);<a name="line.306"></a>
+<FONT color="green">307</FONT>            }<a name="line.307"></a>
+<FONT color="green">308</FONT>    <a name="line.308"></a>
+<FONT color="green">309</FONT>    <a name="line.309"></a>
+<FONT color="green">310</FONT>            /**<a name="line.310"></a>
+<FONT color="green">311</FONT>             * Returns a file pointer in the index pointing to the first byte<a name="line.311"></a>
+<FONT color="green">312</FONT>             * in the key located at the given index position.<a name="line.312"></a>
+<FONT color="green">313</FONT>             */<a name="line.313"></a>
+<FONT color="green">314</FONT>            protected long indexPositionToEntryFp(int pos) {<a name="line.314"></a>
+<FONT color="green">315</FONT>                    return FILE_HEADERS_REGION_LENGTH + (INDEX_ENTRY_LENGTH * pos);<a name="line.315"></a>
+<FONT color="green">316</FONT>            }<a name="line.316"></a>
+<FONT color="green">317</FONT>    <a name="line.317"></a>
+<FONT color="green">318</FONT>            /**<a name="line.318"></a>
+<FONT color="green">319</FONT>             * Reads the ith key from the index.<a name="line.319"></a>
 <FONT color="green">320</FONT>             * @throws IOException<a name="line.320"></a>
 <FONT color="green">321</FONT>             */<a name="line.321"></a>
-<FONT color="green">322</FONT>            protected void addEntryToIndex(IndexEntry newEntry, int currentNumRecords) throws IOException, RecordsFileException {<a name="line.322"></a>
-<FONT color="green">323</FONT>                    file.seek(indexPositionToEntryFp(currentNumRecords));<a name="line.323"></a>
-<FONT color="green">324</FONT>                    newEntry.write(file);<a name="line.324"></a>
-<FONT color="green">325</FONT>                    newEntry.setIndexPosition(currentNumRecords);<a name="line.325"></a>
-<FONT color="green">326</FONT>                    writeNumRecordsHeader(currentNumRecords + 1);<a name="line.326"></a>
-<FONT color="green">327</FONT>            }<a name="line.327"></a>
-<FONT color="green">328</FONT>    <a name="line.328"></a>
-<FONT color="green">329</FONT>    <a name="line.329"></a>
-<FONT color="green">330</FONT>            /**<a name="line.330"></a>
-<FONT color="green">331</FONT>             * Removes the record from the index. Replaces the target with the entry at the<a name="line.331"></a>
-<FONT color="green">332</FONT>             * end of the index.<a name="line.332"></a>
-<FONT color="green">333</FONT>             * @throws RecordsFileException<a name="line.333"></a>
-<FONT color="green">334</FONT>             * @throws IOException<a name="line.334"></a>
-<FONT color="green">335</FONT>             */<a name="line.335"></a>
-<FONT color="green">336</FONT>            protected void deleteEntryFromIndex(String key, IndexEntry entry, int currentNumRecords) throws IOException, RecordsFileException {<a name="line.336"></a>
-<FONT color="green">337</FONT>                    if (entry.indexPosition != currentNumRecords - 1) {<a name="line.337"></a>
-<FONT color="green">338</FONT>                            String lastKey = readKeyFromIndex(currentNumRecords - 1);<a name="line.338"></a>
-<FONT color="green">339</FONT>                            IndexEntry last = keyToIndexEntry(lastKey);<a name="line.339"></a>
-<FONT color="green">340</FONT>                            last.setIndexPosition(entry.indexPosition);<a name="line.340"></a>
-<FONT color="green">341</FONT>                            file.seek(indexPositionToEntryFp(last.indexPosition));<a name="line.341"></a>
-<FONT color="green">342</FONT>                            last.write(file);<a name="line.342"></a>
-<FONT color="green">343</FONT>                    }<a name="line.343"></a>
-<FONT color="green">344</FONT>                    writeNumRecordsHeader(currentNumRecords - 1);<a name="line.344"></a>
-<FONT color="green">345</FONT>            }<a name="line.345"></a>
-<FONT color="green">346</FONT>    <a name="line.346"></a>
-<FONT color="green">347</FONT>            /**<a name="line.347"></a>
-<FONT color="green">348</FONT>             * Adds the given record to the database.<a name="line.348"></a>
-<FONT color="green">349</FONT>             * @throws RecordsFileException<a name="line.349"></a>
-<FONT color="green">350</FONT>             * @throws IOException<a name="line.350"></a>
-<FONT color="green">351</FONT>             */<a name="line.351"></a>
-<FONT color="green">352</FONT>            public synchronized void insertRecord(RecordWriter rw) throws RecordsFileException, IOException {<a name="line.352"></a>
-<FONT color="green">353</FONT>                    String key = rw.getKey();<a name="line.353"></a>
-<FONT color="green">354</FONT>                    if (recordExists(key)) {<a name="line.354"></a>
-<FONT color="green">355</FONT>                            throw new RecordsFileException("Key exists: " + key);<a name="line.355"></a>
-<FONT color="green">356</FONT>                    }<a name="line.356"></a>
-<FONT color="green">357</FONT>                    insureIndexSpace(getNumRecords() + 1);<a name="line.357"></a>
-<FONT color="green">358</FONT>                    IndexEntry newEntry = allocateRecord(key, rw.getDataLength());<a name="line.358"></a>
-<FONT color="green">359</FONT>                    writeRecordData(newEntry, rw);<a name="line.359"></a>
-<FONT color="green">360</FONT>                    addEntryToIndex(newEntry, getNumRecords());<a name="line.360"></a>
-<FONT color="green">361</FONT>            }<a name="line.361"></a>
-<FONT color="green">362</FONT>    <a name="line.362"></a>
-<FONT color="green">363</FONT>            /**<a name="line.363"></a>
-<FONT color="green">364</FONT>             * Appends the Record to the end of a file without searching for free space.<a name="line.364"></a>
-<FONT color="green">365</FONT>             * @throws RecordsFileException<a name="line.365"></a>
-<FONT color="green">366</FONT>             * @throws IOException<a name="line.366"></a>
-<FONT color="green">367</FONT>             */<a name="line.367"></a>
-<FONT color="green">368</FONT>            public synchronized void quickInsertRecord(RecordWriter rw) throws RecordsFileException, IOException {<a name="line.368"></a>
-<FONT color="green">369</FONT>                    String key = rw.getKey();<a name="line.369"></a>
-<FONT color="green">370</FONT>                    int dataLength = rw.getDataLength();<a name="line.370"></a>
-<FONT color="green">371</FONT>                    insureIndexSpace(getNumRecords() + 1);<a name="line.371"></a>
-<FONT color="green">372</FONT>                    long fp = getFileLength();<a name="line.372"></a>
-<FONT color="green">373</FONT>                    setFileLength(fp + dataLength);<a name="line.373"></a>
-<FONT color="green">374</FONT>                    IndexEntry newEntry = new IndexEntry(fp, dataLength, key, MAX_KEY_LENGTH);<a name="line.374"></a>
-<FONT color="green">375</FONT>                    writeRecordData(newEntry, rw);<a name="line.375"></a>
-<FONT color="green">376</FONT>                    addEntryToIndex(newEntry, getNumRecords());<a name="line.376"></a>
-<FONT color="green">377</FONT>            }<a name="line.377"></a>
-<FONT color="green">378</FONT>    <a name="line.378"></a>
-<FONT color="green">379</FONT>            /**<a name="line.379"></a>
-<FONT color="green">380</FONT>             * Updates an existing record. If the new contents does not fit in the original record,<a name="line.380"></a>
-<FONT color="green">381</FONT>             * then the update is handled by deleting the old record and adding the new.<a name="line.381"></a>
-<FONT color="green">382</FONT>             * @throws RecordsFileException<a name="line.382"></a>
-<FONT color="green">383</FONT>             * @throws IOException<a name="line.383"></a>
-<FONT color="green">384</FONT>             */<a name="line.384"></a>
-<FONT color="green">385</FONT>            public synchronized void updateRecord(RecordWriter rw) throws RecordsFileException, IOException {<a name="line.385"></a>
-<FONT color="green">386</FONT>                    IndexEntry entry = keyToIndexEntry(rw.getKey());<a name="line.386"></a>
-<FONT color="green">387</FONT>                    if (rw.getDataLength() &gt; entry.dataCapacity) {<a name="line.387"></a>
-<FONT color="green">388</FONT>                            deleteRecord(rw.getKey());<a name="line.388"></a>
-<FONT color="green">389</FONT>                            insertRecord(rw);<a name="line.389"></a>
-<FONT color="green">390</FONT>                    } else {<a name="line.390"></a>
-<FONT color="green">391</FONT>                            writeRecordData(entry, rw);<a name="line.391"></a>
-<FONT color="green">392</FONT>                            writeEntryToIndex(entry);<a name="line.392"></a>
-<FONT color="green">393</FONT>                    }<a name="line.393"></a>
-<FONT color="green">394</FONT>            }<a name="line.394"></a>
-<FONT color="green">395</FONT>    <a name="line.395"></a>
-<FONT color="green">396</FONT>            /**<a name="line.396"></a>
-<FONT color="green">397</FONT>             * Reads a record.<a name="line.397"></a>
-<FONT color="green">398</FONT>             * @throws RecordsFileException<a name="line.398"></a>
-<FONT color="green">399</FONT>             * @throws IOException<a name="line.399"></a>
-<FONT color="green">400</FONT>             */<a name="line.400"></a>
-<FONT color="green">401</FONT>            public synchronized RecordReader readRecord(String key) throws RecordsFileException, IOException {<a name="line.401"></a>
-<FONT color="green">402</FONT>                    byte[] data = readRecordData(key);<a name="line.402"></a>
-<FONT color="green">403</FONT>                    return new RecordReader(key, data);<a name="line.403"></a>
-<FONT color="green">404</FONT>            }<a name="line.404"></a>
-<FONT color="green">405</FONT>    <a name="line.405"></a>
-<FONT color="green">406</FONT>            /**<a name="line.406"></a>
-<FONT color="green">407</FONT>             * Reads the data for the record with the given key.<a name="line.407"></a>
-<FONT color="green">408</FONT>             * @throws RecordsFileException<a name="line.408"></a>
-<FONT color="green">409</FONT>             * @throws IOException<a name="line.409"></a>
-<FONT color="green">410</FONT>             */<a name="line.410"></a>
-<FONT color="green">411</FONT>            protected byte[] readRecordData(String key) throws IOException, RecordsFileException {<a name="line.411"></a>
-<FONT color="green">412</FONT>                    return readRecordData(keyToIndexEntry(key));<a name="line.412"></a>
-<FONT color="green">413</FONT>            }<a name="line.413"></a>
-<FONT color="green">414</FONT>    <a name="line.414"></a>
-<FONT color="green">415</FONT>            /**<a name="line.415"></a>
-<FONT color="green">416</FONT>             * Reads the record data for the given record header.<a name="line.416"></a>
-<FONT color="green">417</FONT>             * @throws IOException<a name="line.417"></a>
-<FONT color="green">418</FONT>             */<a name="line.418"></a>
-<FONT color="green">419</FONT>            protected byte[] readRecordData(IndexEntry entry) throws IOException {<a name="line.419"></a>
-<FONT color="green">420</FONT>                    byte[] buf = new byte[entry.dataCount];<a name="line.420"></a>
-<FONT color="green">421</FONT>                    file.seek(entry.dataPointer);<a name="line.421"></a>
-<FONT color="green">422</FONT>                    file.readFully(buf);<a name="line.422"></a>
-<FONT color="green">423</FONT>                    return buf;<a name="line.423"></a>
-<FONT color="green">424</FONT>            }<a name="line.424"></a>
-<FONT color="green">425</FONT>    <a name="line.425"></a>
-<FONT color="green">426</FONT>            /**<a name="line.426"></a>
-<FONT color="green">427</FONT>             * Updates the contents of the given record. A RecordsFileException is thrown if the new data does not<a name="line.427"></a>
-<FONT color="green">428</FONT>             * fit in the space allocated to the record. The header's data count is updated, but not<a name="line.428"></a>
-<FONT color="green">429</FONT>             * written to the file.<a name="line.429"></a>
-<FONT color="green">430</FONT>             * @throws RecordsFileException<a name="line.430"></a>
-<FONT color="green">431</FONT>             * @throws IOException<a name="line.431"></a>
-<FONT color="green">432</FONT>             */<a name="line.432"></a>
-<FONT color="green">433</FONT>            protected void writeRecordData(IndexEntry entry, RecordWriter rw) throws IOException, RecordsFileException {<a name="line.433"></a>
-<FONT color="green">434</FONT>                    if (rw.getDataLength() &gt; entry.dataCapacity) {<a name="line.434"></a>
-<FONT color="green">435</FONT>                            throw new RecordsFileException ("Record data does not fit");<a name="line.435"></a>
-<FONT color="green">436</FONT>                    }<a name="line.436"></a>
-<FONT color="green">437</FONT>                    entry.dataCount = rw.getDataLength();<a name="line.437"></a>
-<FONT color="green">438</FONT>                    file.seek(entry.dataPointer);<a name="line.438"></a>
-<FONT color="green">439</FONT>                    rw.writeTo((DataOutput)file);<a name="line.439"></a>
-<FONT color="green">440</FONT>            }<a name="line.440"></a>
-<FONT color="green">441</FONT>    <a name="line.441"></a>
+<FONT color="green">322</FONT>            String readKeyFromIndex(int position) throws IOException {<a name="line.322"></a>
+<FONT color="green">323</FONT>                    file.seek(indexPositionToEntryFp(position));<a name="line.323"></a>
+<FONT color="green">324</FONT>                    return file.readUTF();<a name="line.324"></a>
+<FONT color="green">325</FONT>            }<a name="line.325"></a>
+<FONT color="green">326</FONT>    <a name="line.326"></a>
+<FONT color="green">327</FONT>            /**<a name="line.327"></a>
+<FONT color="green">328</FONT>             * Reads the ith index entry from the index.<a name="line.328"></a>
+<FONT color="green">329</FONT>             * @throws IOException<a name="line.329"></a>
+<FONT color="green">330</FONT>             */<a name="line.330"></a>
+<FONT color="green">331</FONT>            IndexEntry readEntryFromIndex(int position) throws IOException {<a name="line.331"></a>
+<FONT color="green">332</FONT>                    file.seek(position);<a name="line.332"></a>
+<FONT color="green">333</FONT>                    return IndexEntry.readEntry(file);<a name="line.333"></a>
+<FONT color="green">334</FONT>            }<a name="line.334"></a>
+<FONT color="green">335</FONT>    <a name="line.335"></a>
+<FONT color="green">336</FONT>            /**<a name="line.336"></a>
+<FONT color="green">337</FONT>             * Writes the ith index entry to the index.<a name="line.337"></a>
+<FONT color="green">338</FONT>             * @throws IOException<a name="line.338"></a>
+<FONT color="green">339</FONT>             */<a name="line.339"></a>
+<FONT color="green">340</FONT>            protected void writeEntryToIndex(IndexEntry entry) throws IOException {<a name="line.340"></a>
+<FONT color="green">341</FONT>                    file.seek(entry.indexPosition);<a name="line.341"></a>
+<FONT color="green">342</FONT>                    entry.write(file);<a name="line.342"></a>
+<FONT color="green">343</FONT>            }<a name="line.343"></a>
+<FONT color="green">344</FONT>    <a name="line.344"></a>
+<FONT color="green">345</FONT>            /**<a name="line.345"></a>
+<FONT color="green">346</FONT>             * Appends an entry to end of index. Assumes that insureIndexSpace() has already been called.<a name="line.346"></a>
+<FONT color="green">347</FONT>             * @throws RecordsFileException<a name="line.347"></a>
+<FONT color="green">348</FONT>             * @throws IOException<a name="line.348"></a>
+<FONT color="green">349</FONT>             */<a name="line.349"></a>
+<FONT color="green">350</FONT>            protected void addEntryToIndex(IndexEntry newEntry, int currentNumRecords) throws IOException, RecordsFileException {<a name="line.350"></a>
+<FONT color="green">351</FONT>                    file.seek(indexPositionToEntryFp(currentNumRecords));<a name="line.351"></a>
+<FONT color="green">352</FONT>                    newEntry.write(file);<a name="line.352"></a>
+<FONT color="green">353</FONT>                    newEntry.setIndexPosition(currentNumRecords);<a name="line.353"></a>
+<FONT color="green">354</FONT>                    writeNumRecordsHeader(currentNumRecords + 1);<a name="line.354"></a>
+<FONT color="green">355</FONT>            }<a name="line.355"></a>
+<FONT color="green">356</FONT>    <a name="line.356"></a>
+<FONT color="green">357</FONT>    <a name="line.357"></a>
+<FONT color="green">358</FONT>            /**<a name="line.358"></a>
+<FONT color="green">359</FONT>             * Removes the record from the index. Replaces the target with the entry at the<a name="line.359"></a>
+<FONT color="green">360</FONT>             * end of the index.<a name="line.360"></a>
+<FONT color="green">361</FONT>             * @throws RecordsFileException<a name="line.361"></a>
+<FONT color="green">362</FONT>             * @throws IOException<a name="line.362"></a>
+<FONT color="green">363</FONT>             */<a name="line.363"></a>
+<FONT color="green">364</FONT>            protected void deleteEntryFromIndex(String key, IndexEntry entry, int currentNumRecords) throws IOException, RecordsFileException {<a name="line.364"></a>
+<FONT color="green">365</FONT>                    if (entry.indexPosition != currentNumRecords - 1) {<a name="line.365"></a>
+<FONT color="green">366</FONT>                            String lastKey = readKeyFromIndex(currentNumRecords - 1);<a name="line.366"></a>
+<FONT color="green">367</FONT>                            IndexEntry last = keyToIndexEntry(lastKey);<a name="line.367"></a>
+<FONT color="green">368</FONT>                            last.setIndexPosition(entry.indexPosition);<a name="line.368"></a>
+<FONT color="green">369</FONT>                            file.seek(indexPositionToEntryFp(last.indexPosition));<a name="line.369"></a>
+<FONT color="green">370</FONT>                            last.write(file);<a name="line.370"></a>
+<FONT color="green">371</FONT>                    }<a name="line.371"></a>
+<FONT color="green">372</FONT>                    writeNumRecordsHeader(currentNumRecords - 1);<a name="line.372"></a>
+<FONT color="green">373</FONT>            }<a name="line.373"></a>
+<FONT color="green">374</FONT>    <a name="line.374"></a>
+<FONT color="green">375</FONT>            /**<a name="line.375"></a>
+<FONT color="green">376</FONT>             * Adds the given record to the database.<a name="line.376"></a>
+<FONT color="green">377</FONT>             * @throws RecordsFileException<a name="line.377"></a>
+<FONT color="green">378</FONT>             * @throws IOException<a name="line.378"></a>
+<FONT color="green">379</FONT>             */<a name="line.379"></a>
+<FONT color="green">380</FONT>            public synchronized void insertRecord(RecordWriter rw) throws RecordsFileException, IOException {<a name="line.380"></a>
+<FONT color="green">381</FONT>                    String key = rw.getKey();<a name="line.381"></a>
+<FONT color="green">382</FONT>                    if (recordExists(key)) {<a name="line.382"></a>
+<FONT color="green">383</FONT>                            throw new RecordsFileException("Key exists: " + key);<a name="line.383"></a>
+<FONT color="green">384</FONT>                    }<a name="line.384"></a>
+<FONT color="green">385</FONT>                    insureIndexSpace(getNumRecords() + 1);<a name="line.385"></a>
+<FONT color="green">386</FONT>                    IndexEntry newEntry = allocateRecord(key, rw.getDataLength());<a name="line.386"></a>
+<FONT color="green">387</FONT>                    writeRecordData(newEntry, rw);<a name="line.387"></a>
+<FONT color="green">388</FONT>                    addEntryToIndex(newEntry, getNumRecords());<a name="line.388"></a>
+<FONT color="green">389</FONT>            }<a name="line.389"></a>
+<FONT color="green">390</FONT>    <a name="line.390"></a>
+<FONT color="green">391</FONT>            /**<a name="line.391"></a>
+<FONT color="green">392</FONT>             * Appends the Record to the end of a file without searching for free space.<a name="line.392"></a>
+<FONT color="green">393</FONT>             * @throws RecordsFileException<a name="line.393"></a>
+<FONT color="green">394</FONT>             * @throws IOException<a name="line.394"></a>
+<FONT color="green">395</FONT>             */<a name="line.395"></a>
+<FONT color="green">396</FONT>            public synchronized void quickInsertRecord(RecordWriter rw) throws RecordsFileException, IOException {<a name="line.396"></a>
+<FONT color="green">397</FONT>                    String key = rw.getKey();<a name="line.397"></a>
+<FONT color="green">398</FONT>                    int dataLength = rw.getDataLength();<a name="line.398"></a>
+<FONT color="green">399</FONT>                    insureIndexSpace(getNumRecords() + 1);<a name="line.399"></a>
+<FONT color="green">400</FONT>                    long fp = getFileLength();<a name="line.400"></a>
+<FONT color="green">401</FONT>                    setFileLength(fp + dataLength);<a name="line.401"></a>
+<FONT color="green">402</FONT>                    IndexEntry newEntry = new IndexEntry(fp, dataLength, key, MAX_KEY_LENGTH);<a name="line.402"></a>
+<FONT color="green">403</FONT>                    writeRecordData(newEntry, rw);<a name="line.403"></a>
+<FONT color="green">404</FONT>                    addEntryToIndex(newEntry, getNumRecords());<a name="line.404"></a>
+<FONT color="green">405</FONT>            }<a name="line.405"></a>
+<FONT color="green">406</FONT>    <a name="line.406"></a>
+<FONT color="green">407</FONT>            /**<a name="line.407"></a>
+<FONT color="green">408</FONT>             * Updates an existing record. If the new contents does not fit in the original record,<a name="line.408"></a>
+<FONT color="green">409</FONT>             * then the update is handled by deleting the old record and adding the new.<a name="line.409"></a>
+<FONT color="green">410</FONT>             * @throws RecordsFileException<a name="line.410"></a>
+<FONT color="green">411</FONT>             * @throws IOException<a name="line.411"></a>
+<FONT color="green">412</FONT>             */<a name="line.412"></a>
+<FONT color="green">413</FONT>            public synchronized void updateRecord(RecordWriter rw) throws RecordsFileException, IOException {<a name="line.413"></a>
+<FONT color="green">414</FONT>                    IndexEntry entry = keyToIndexEntry(rw.getKey());<a name="line.414"></a>
+<FONT color="green">415</FONT>                    if (rw.getDataLength() &gt; entry.dataCapacity) {<a name="line.415"></a>
+<FONT color="green">416</FONT>                            deleteRecord(rw.getKey());<a name="line.416"></a>
+<FONT color="green">417</FONT>                            insertRecord(rw);<a name="line.417"></a>
+<FONT color="green">418</FONT>                    } else {<a name="line.418"></a>
+<FONT color="green">419</FONT>                            writeRecordData(entry, rw);<a name="line.419"></a>
+<FONT color="green">420</FONT>                            writeEntryToIndex(entry);<a name="line.420"></a>
+<FONT color="green">421</FONT>                    }<a name="line.421"></a>
+<FONT color="green">422</FONT>            }<a name="line.422"></a>
+<FONT color="green">423</FONT>    <a name="line.423"></a>
+<FONT color="green">424</FONT>            /**<a name="line.424"></a>
+<FONT color="green">425</FONT>             * Reads a record.<a name="line.425"></a>
+<FONT color="green">426</FONT>             * @throws RecordsFileException<a name="line.426"></a>
+<FONT color="green">427</FONT>             * @throws IOException<a name="line.427"></a>
+<FONT color="green">428</FONT>             */<a name="line.428"></a>
+<FONT color="green">429</FONT>            public synchronized RecordReader readRecord(String key) throws RecordsFileException, IOException {<a name="line.429"></a>
+<FONT color="green">430</FONT>                    byte[] data = readRecordData(key);<a name="line.430"></a>
+<FONT color="green">431</FONT>                    return new RecordReader(key, data);<a name="line.431"></a>
+<FONT color="green">432</FONT>            }<a name="line.432"></a>
+<FONT color="green">433</FONT>    <a name="line.433"></a>
+<FONT color="green">434</FONT>            /**<a name="line.434"></a>
+<FONT color="green">435</FONT>             * Reads the data for the record with the given key.<a name="line.435"></a>
+<FONT color="green">436</FONT>             * @throws RecordsFileException<a name="line.436"></a>
+<FONT color="green">437</FONT>             * @throws IOException<a name="line.437"></a>
+<FONT color="green">438</FONT>             */<a name="line.438"></a>
+<FONT color="green">439</FONT>            protected byte[] readRecordData(String key) throws IOException, RecordsFileException {<a name="line.439"></a>
+<FONT color="green">440</FONT>                    return readRecordData(keyToIndexEntry(key));<a name="line.440"></a>
+<FONT color="green">441</FONT>            }<a name="line.441"></a>
 <FONT color="green">442</FONT>    <a name="line.442"></a>
 <FONT color="green">443</FONT>            /**<a name="line.443"></a>
-<FONT color="green">444</FONT>             * Updates the contents of the given record. A RecordsFileException is thrown if the new data does not<a name="line.444"></a>
-<FONT color="green">445</FONT>             * fit in the space allocated to the record. The header's data count is updated, but not<a name="line.445"></a>
-<FONT color="green">446</FONT>             * written to the file.<a name="line.446"></a>
-<FONT color="green">447</FONT>             * @throws RecordsFileException<a name="line.447"></a>
-<FONT color="green">448</FONT>             * @throws IOException<a name="line.448"></a>
-<FONT color="green">449</FONT>             */<a name="line.449"></a>
-<FONT color="green">450</FONT>            protected void writeRecordData(IndexEntry entry, byte[] data) throws IOException, RecordsFileException {<a name="line.450"></a>
-<FONT color="green">451</FONT>                    if (data.length &gt; entry.dataCapacity) {<a name="line.451"></a>
-<FONT color="green">452</FONT>                            throw new RecordsFileException ("Record data does not fit");<a name="line.452"></a>
-<FONT color="green">453</FONT>                    }<a name="line.453"></a>
-<FONT color="green">454</FONT>                    entry.dataCount = data.length;<a name="line.454"></a>
-<FONT color="green">455</FONT>                    file.seek(entry.dataPointer);<a name="line.455"></a>
-<FONT color="green">456</FONT>                    file.write(data, 0, data.length);<a name="line.456"></a>
-<FONT color="green">457</FONT>            }<a name="line.457"></a>
-<FONT color="green">458</FONT>    <a name="line.458"></a>
-<FONT color="green">459</FONT>    <a name="line.459"></a>
-<FONT color="green">460</FONT>            /**<a name="line.460"></a>
-<FONT color="green">461</FONT>             * Deletes a record.<a name="line.461"></a>
-<FONT color="green">462</FONT>             * @throws RecordsFileException<a name="line.462"></a>
-<FONT color="green">463</FONT>             * @throws IOException<a name="line.463"></a>
-<FONT color="green">464</FONT>             */<a name="line.464"></a>
-<FONT color="green">465</FONT>            public synchronized void deleteRecord(String key) throws RecordsFileException, IOException {<a name="line.465"></a>
-<FONT color="green">466</FONT>                    IndexEntry delEntry = keyToIndexEntry(key);<a name="line.466"></a>
-<FONT color="green">467</FONT>                    int currentNumRecords = getNumRecords();<a name="line.467"></a>
-<FONT color="green">468</FONT>                    if (getFileLength() == delEntry.dataPointer + delEntry.dataCapacity) {<a name="line.468"></a>
-<FONT color="green">469</FONT>                            // shrink file since this is the last record in the file<a name="line.469"></a>
-<FONT color="green">470</FONT>                            setFileLength(delEntry.dataPointer);<a name="line.470"></a>
-<FONT color="green">471</FONT>                    } else {<a name="line.471"></a>
-<FONT color="green">472</FONT>                            IndexEntry previous = getIndexAt(delEntry.dataPointer - 1);<a name="line.472"></a>
-<FONT color="green">473</FONT>                            if (previous != null) {<a name="line.473"></a>
-<FONT color="green">474</FONT>                                    // append space of deleted record onto previous record<a name="line.474"></a>
-<FONT color="green">475</FONT>                                    previous.dataCapacity += delEntry.dataCapacity;<a name="line.475"></a>
-<FONT color="green">476</FONT>                                    writeEntryToIndex(previous);<a name="line.476"></a>
-<FONT color="green">477</FONT>                            } else {<a name="line.477"></a>
-<FONT color="green">478</FONT>                                    // target record is first in the file and is deleted by adding its space to<a name="line.478"></a>
-<FONT color="green">479</FONT>                                    // the second record.<a name="line.479"></a>
-<FONT color="green">480</FONT>                                    IndexEntry secondEntry = getIndexAt(delEntry.dataPointer + (long)delEntry.dataCapacity);<a name="line.480"></a>
-<FONT color="green">481</FONT>                                    byte[] data = readRecordData(secondEntry);<a name="line.481"></a>
-<FONT color="green">482</FONT>                                    secondEntry.dataPointer = delEntry.dataPointer;<a name="line.482"></a>
-<FONT color="green">483</FONT>                                    secondEntry.dataCapacity += delEntry.dataCapacity;<a name="line.483"></a>
-<FONT color="green">484</FONT>                                    writeRecordData(secondEntry, data);<a name="line.484"></a>
-<FONT color="green">485</FONT>                                    writeEntryToIndex(secondEntry);<a name="line.485"></a>
-<FONT color="green">486</FONT>                            }<a name="line.486"></a>
-<FONT color="green">487</FONT>                    }<a name="line.487"></a>
-<FONT color="green">488</FONT>                    deleteEntryFromIndex(key, delEntry, currentNumRecords);<a name="line.488"></a>
-<FONT color="green">489</FONT>            }<a name="line.489"></a>
-<FONT color="green">490</FONT>    <a name="line.490"></a>
-<FONT color="green">491</FONT>    <a name="line.491"></a>
-<FONT color="green">492</FONT>            /**<a name="line.492"></a>
-<FONT color="green">493</FONT>             * Checks to see if there is space for and additional index entry. If<a name="line.493"></a>
-<FONT color="green">494</FONT>             * not, space is created by moving records to the end of the file.<a name="line.494"></a>
-<FONT color="green">495</FONT>             * @throws RecordsFileException<a name="line.495"></a>
-<FONT color="green">496</FONT>             * @throws IOException<a name="line.496"></a>
-<FONT color="green">497</FONT>             */<a name="line.497"></a>
-<FONT color="green">498</FONT>            protected void insureIndexSpace(int requiredNumRecords) throws RecordsFileException, IOException {<a name="line.498"></a>
-<FONT color="green">499</FONT>                    int originalFirstDataCapacity;<a name="line.499"></a>
-<FONT color="green">500</FONT>                    int currentNumRecords = getNumRecords();<a name="line.500"></a>
-<FONT color="green">501</FONT>                    long endIndexPtr = indexPositionToEntryFp(requiredNumRecords);<a name="line.501"></a>
-<FONT color="green">502</FONT>                    if (endIndexPtr &gt; getFileLength() &amp;&amp; currentNumRecords == 0) {<a name="line.502"></a>
-<FONT color="green">503</FONT>                            setFileLength(endIndexPtr);<a name="line.503"></a>
-<FONT color="green">504</FONT>                            dataStartPtr = endIndexPtr;<a name="line.504"></a>
-<FONT color="green">505</FONT>                            writeDataStartPtrHeader(dataStartPtr);<a name="line.505"></a>
-<FONT color="green">506</FONT>                            return;<a name="line.506"></a>
-<FONT color="green">507</FONT>                    }<a name="line.507"></a>
-<FONT color="green">508</FONT>                    while (endIndexPtr &gt; dataStartPtr) {<a name="line.508"></a>
-<FONT color="green">509</FONT>                            IndexEntry first = getIndexAt(dataStartPtr);<a name="line.509"></a>
-<FONT color="green">510</FONT>                            byte[] data = readRecordData(first);<a name="line.510"></a>
-<FONT color="green">511</FONT>                            first.dataPointer = getFileLength();<a name="line.511"></a>
-<FONT color="green">512</FONT>                            // If first.dataCapacity is set to the actual data count BEFORE resetting dataStartPtr,<a name="line.512"></a>
-<FONT color="green">513</FONT>                            // and there is free space in 'first', then dataStartPtr will not be reset to the start<a name="line.513"></a>
-<FONT color="green">514</FONT>                            // of the second record. Capture the capacity first and use it to perform the reset.<a name="line.514"></a>
-<FONT color="green">515</FONT>                            originalFirstDataCapacity = first.dataCapacity;<a name="line.515"></a>
-<FONT color="green">516</FONT>                            first.dataCapacity = data.length;<a name="line.516"></a>
-<FONT color="green">517</FONT>                            setFileLength(first.dataPointer + data.length);<a name="line.517"></a>
-<FONT color="green">518</FONT>                            writeRecordData(first, data);<a name="line.518"></a>
-<FONT color="green">519</FONT>                            writeEntryToIndex(first);<a name="line.519"></a>
-<FONT color="green">520</FONT>                            dataStartPtr += originalFirstDataCapacity;<a name="line.520"></a>
-<FONT color="green">521</FONT>                            writeDataStartPtrHeader(dataStartPtr);<a name="line.521"></a>
-<FONT color="green">522</FONT>                    }<a name="line.522"></a>
-<FONT color="green">523</FONT>            }<a name="line.523"></a>
-<FONT color="green">524</FONT>    <a name="line.524"></a>
-<FONT color="green">525</FONT>            /**<a name="line.525"></a>
-<FONT color="green">526</FONT>             * Closes the file.<a name="line.526"></a>
-<FONT color="green">527</FONT>             * @throws RecordsFileException<a name="line.527"></a>
-<FONT color="green">528</FONT>             * @throws IOException<a name="line.528"></a>
-<FONT color="green">529</FONT>             */<a name="line.529"></a>
-<FONT color="green">530</FONT>            public synchronized void close() throws IOException, RecordsFileException {<a name="line.530"></a>
-<FONT color="green">531</FONT>                    try {<a name="line.531"></a>
-<FONT color="green">532</FONT>                            file.close();<a name="line.532"></a>
-<FONT color="green">533</FONT>                    } finally {<a name="line.533"></a>
-<FONT color="green">534</FONT>                            file = null;<a name="line.534"></a>
+<FONT color="green">444</FONT>             * Reads the record data for the given record header.<a name="line.444"></a>
+<FONT color="green">445</FONT>             * @throws IOException<a name="line.445"></a>
+<FONT color="green">446</FONT>             */<a name="line.446"></a>
+<FONT color="green">447</FONT>            protected byte[] readRecordData(IndexEntry entry) throws IOException {<a name="line.447"></a>
+<FONT color="green">448</FONT>                    byte[] buf = new byte[entry.dataCount];<a name="line.448"></a>
+<FONT color="green">449</FONT>                    file.seek(entry.dataPointer);<a name="line.449"></a>
+<FONT color="green">450</FONT>                    file.readFully(buf);<a name="line.450"></a>
+<FONT color="green">451</FONT>                    return buf;<a name="line.451"></a>
+<FONT color="green">452</FONT>            }<a name="line.452"></a>
+<FONT color="green">453</FONT>    <a name="line.453"></a>
+<FONT color="green">454</FONT>            /**<a name="line.454"></a>
+<FONT color="green">455</FONT>             * Updates the contents of the given record. A RecordsFileException is thrown if the new data does not<a name="line.455"></a>
+<FONT color="green">456</FONT>             * fit in the space allocated to the record. The header's data count is updated, but not<a name="line.456"></a>
+<FONT color="green">457</FONT>             * written to the file.<a name="line.457"></a>
+<FONT color="green">458</FONT>             * @throws RecordsFileException<a name="line.458"></a>
+<FONT color="green">459</FONT>             * @throws IOException<a name="line.459"></a>
+<FONT color="green">460</FONT>             */<a name="line.460"></a>
+<FONT color="green">461</FONT>            protected void writeRecordData(IndexEntry entry, RecordWriter rw) throws IOException, RecordsFileException {<a name="line.461"></a>
+<FONT color="green">462</FONT>                    if (rw.getDataLength() &gt; entry.dataCapacity) {<a name="line.462"></a>
+<FONT color="green">463</FONT>                            throw new RecordsFileException ("Record data does not fit");<a name="line.463"></a>
+<FONT color="green">464</FONT>                    }<a name="line.464"></a>
+<FONT color="green">465</FONT>                    entry.dataCount = rw.getDataLength();<a name="line.465"></a>
+<FONT color="green">466</FONT>                    file.seek(entry.dataPointer);<a name="line.466"></a>
+<FONT color="green">467</FONT>                    rw.writeTo((DataOutput)file);<a name="line.467"></a>
+<FONT color="green">468</FONT>            }<a name="line.468"></a>
+<FONT color="green">469</FONT>    <a name="line.469"></a>
+<FONT color="green">470</FONT>    <a name="line.470"></a>
+<FONT color="green">471</FONT>            /**<a name="line.471"></a>
+<FONT color="green">472</FONT>             * Updates the contents of the given record. A RecordsFileException is thrown if the new data does not<a name="line.472"></a>
+<FONT color="green">473</FONT>             * fit in the space allocated to the record. The header's data count is updated, but not<a name="line.473"></a>
+<FONT color="green">474</FONT>             * written to the file.<a name="line.474"></a>
+<FONT color="green">475</FONT>             * @throws RecordsFileException<a name="line.475"></a>
+<FONT color="green">476</FONT>             * @throws IOException<a name="line.476"></a>
+<FONT color="green">477</FONT>             */<a name="line.477"></a>
+<FONT color="green">478</FONT>            protected void writeRecordData(IndexEntry entry, byte[] data) throws IOException, RecordsFileException {<a name="line.478"></a>
+<FONT color="green">479</FONT>                    if (data.length &gt; entry.dataCapacity) {<a name="line.479"></a>
+<FONT color="green">480</FONT>                            throw new RecordsFileException ("Record data does not fit");<a name="line.480"></a>
+<FONT color="green">481</FONT>                    }<a name="line.481"></a>
+<FONT color="green">482</FONT>                    entry.dataCount = data.length;<a name="line.482"></a>
+<FONT color="green">483</FONT>                    file.seek(entry.dataPointer);<a name="line.483"></a>
+<FONT color="green">484</FONT>                    file.write(data, 0, data.length);<a name="line.484"></a>
+<FONT color="green">485</FONT>            }<a name="line.485"></a>
+<FONT color="green">486</FONT>    <a name="line.486"></a>
+<FONT color="green">487</FONT>    <a name="line.487"></a>
+<FONT color="green">488</FONT>            /**<a name="line.488"></a>
+<FONT color="green">489</FONT>             * Deletes a record.<a name="line.489"></a>
+<FONT color="green">490</FONT>             * @throws RecordsFileException<a name="line.490"></a>
+<FONT color="green">491</FONT>             * @throws IOException<a name="line.491"></a>
+<FONT color="green">492</FONT>             */<a name="line.492"></a>
+<FONT color="green">493</FONT>            public synchronized void deleteRecord(String key) throws RecordsFileException, IOException {<a name="line.493"></a>
+<FONT color="green">494</FONT>                    IndexEntry delEntry = keyToIndexEntry(key);<a name="line.494"></a>
+<FONT color="green">495</FONT>                    int currentNumRecords = getNumRecords();<a name="line.495"></a>
+<FONT color="green">496</FONT>                    if (getFileLength() == delEntry.dataPointer + delEntry.dataCapacity) {<a name="line.496"></a>
+<FONT color="green">497</FONT>                            // shrink file since this is the last record in the file<a name="line.497"></a>
+<FONT color="green">498</FONT>                            setFileLength(delEntry.dataPointer);<a name="line.498"></a>
+<FONT color="green">499</FONT>                    } else {<a name="line.499"></a>
+<FONT color="green">500</FONT>                            IndexEntry previous = getIndexAt(delEntry.dataPointer - 1);<a name="line.500"></a>
+<FONT color="green">501</FONT>                            if (previous != null) {<a name="line.501"></a>
+<FONT color="green">502</FONT>                                    // append space of deleted record onto previous record<a name="line.502"></a>
+<FONT color="green">503</FONT>                                    previous.dataCapacity += delEntry.dataCapacity;<a name="line.503"></a>
+<FONT color="green">504</FONT>                                    writeEntryToIndex(previous);<a name="line.504"></a>
+<FONT color="green">505</FONT>                            } else {<a name="line.505"></a>
+<FONT color="green">506</FONT>                                    // target record is first in the file and is deleted by adding its space to<a name="line.506"></a>
+<FONT color="green">507</FONT>                                    // the second record.<a name="line.507"></a>
+<FONT color="green">508</FONT>                                    IndexEntry secondEntry = getIndexAt(delEntry.dataPointer + (long)delEntry.dataCapacity);<a name="line.508"></a>
+<FONT color="green">509</FONT>                                    byte[] data = readRecordData(secondEntry);<a name="line.509"></a>
+<FONT color="green">510</FONT>                                    secondEntry.dataPointer = delEntry.dataPointer;<a name="line.510"></a>
+<FONT color="green">511</FONT>                                    secondEntry.dataCapacity += delEntry.dataCapacity;<a name="line.511"></a>
+<FONT color="green">512</FONT>                                    writeRecordData(secondEntry, data);<a name="line.512"></a>
+<FONT color="green">513</FONT>                                    writeEntryToIndex(secondEntry);<a name="line.513"></a>
+<FONT color="green">514</FONT>                            }<a name="line.514"></a>
+<FONT color="green">515</FONT>                    }<a name="line.515"></a>
+<FONT color="green">516</FONT>                    deleteEntryFromIndex(key, delEntry, currentNumRecords);<a name="line.516"></a>
+<FONT color="green">517</FONT>            }<a name="line.517"></a>
+<FONT color="green">518</FONT>    <a name="line.518"></a>
+<FONT color="green">519</FONT>    <a name="line.519"></a>
+<FONT color="green">520</FONT>            /**<a name="line.520"></a>
+<FONT color="green">521</FONT>             * Checks to see if there is space for and additional index entry. If<a name="line.521"></a>
+<FONT color="green">522</FONT>             * not, space is created by moving records to the end of the file.<a name="line.522"></a>
+<FONT color="green">523</FONT>             * @throws RecordsFileException<a name="line.523"></a>
+<FONT color="green">524</FONT>             * @throws IOException<a name="line.524"></a>
+<FONT color="green">525</FONT>             */<a name="line.525"></a>
+<FONT color="green">526</FONT>            protected void insureIndexSpace(int requiredNumRecords) throws RecordsFileException, IOException {<a name="line.526"></a>
+<FONT color="green">527</FONT>                    int originalFirstDataCapacity;<a name="line.527"></a>
+<FONT color="green">528</FONT>                    int currentNumRecords = getNumRecords();<a name="line.528"></a>
+<FONT color="green">529</FONT>                    long endIndexPtr = indexPositionToEntryFp(requiredNumRecords);<a name="line.529"></a>
+<FONT color="green">530</FONT>                    if (endIndexPtr &gt; getFileLength() &amp;&amp; currentNumRecords == 0) {<a name="line.530"></a>
+<FONT color="green">531</FONT>                            setFileLength(endIndexPtr);<a name="line.531"></a>
+<FONT color="green">532</FONT>                            dataStartPtr = endIndexPtr;<a name="line.532"></a>
+<FONT color="green">533</FONT>                            writeDataStartPtrHeader(dataStartPtr);<a name="line.533"></a>
+<FONT color="green">534</FONT>                            return;<a name="line.534"></a>
 <FONT color="green">535</FONT>                    }<a name="line.535"></a>
-<FONT color="green">536</FONT>            }<a name="line.536"></a>
-<FONT color="green">537</FONT>    }<a name="line.537"></a>
+<FONT color="green">536</FONT>                    while (endIndexPtr &gt; dataStartPtr) {<a name="line.536"></a>
+<FONT color="green">537</FONT>                            IndexEntry first = getIndexAt(dataStartPtr);<a name="line.537"></a>
+<FONT color="green">538</FONT>                            byte[] data = readRecordData(first);<a name="line.538"></a>
+<FONT color="green">539</FONT>                            first.dataPointer = getFileLength();<a name="line.539"></a>
+<FONT color="green">540</FONT>                            // If first.dataCapacity is set to the actual data count BEFORE resetting dataStartPtr,<a name="line.540"></a>
+<FONT color="green">541</FONT>                            // and there is free space in 'first', then dataStartPtr will not be reset to the start<a name="line.541"></a>
+<FONT color="green">542</FONT>                            // of the second record. Capture the capacity first and use it to perform the reset.<a name="line.542"></a>
+<FONT color="green">543</FONT>                            originalFirstDataCapacity = first.dataCapacity;<a name="line.543"></a>
+<FONT color="green">544</FONT>                            first.dataCapacity = data.length;<a name="line.544"></a>
+<FONT color="green">545</FONT>                            setFileLength(first.dataPointer + data.length);<a name="line.545"></a>
+<FONT color="green">546</FONT>                            writeRecordData(first, data);<a name="line.546"></a>
+<FONT color="green">547</FONT>                            writeEntryToIndex(first);<a name="line.547"></a>
+<FONT color="green">548</FONT>                            dataStartPtr += originalFirstDataCapacity;<a name="line.548"></a>
+<FONT color="green">549</FONT>                            writeDataStartPtrHeader(dataStartPtr);<a name="line.549"></a>
+<FONT color="green">550</FONT>                    }<a name="line.550"></a>
+<FONT color="green">551</FONT>            }<a name="line.551"></a>
+<FONT color="green">552</FONT>    <a name="line.552"></a>
+<FONT color="green">553</FONT>            /**<a name="line.553"></a>
+<FONT color="green">554</FONT>             * Closes the file.<a name="line.554"></a>
+<FONT color="green">555</FONT>             * @throws RecordsFileException<a name="line.555"></a>
+<FONT color="green">556</FONT>             * @throws IOException<a name="line.556"></a>
+<FONT color="green">557</FONT>             */<a name="line.557"></a>
+<FONT color="green">558</FONT>            public synchronized void close() throws IOException, RecordsFileException {<a name="line.558"></a>
+<FONT color="green">559</FONT>                    try {<a name="line.559"></a>
+<FONT color="green">560</FONT>                            file.close();<a name="line.560"></a>
+<FONT color="green">561</FONT>                    } finally {<a name="line.561"></a>
+<FONT color="green">562</FONT>                            file = null;<a name="line.562"></a>
+<FONT color="green">563</FONT>                    }<a name="line.563"></a>
+<FONT color="green">564</FONT>            }<a name="line.564"></a>
+<FONT color="green">565</FONT>    }<a name="line.565"></a>
 
 
 
