@@ -29,6 +29,8 @@ import de.Lathanael.BinaryFileDB.BaseClass.RecordsFile;
 import de.Lathanael.BinaryFileDB.Exception.CacheSizeException;
 import de.Lathanael.BinaryFileDB.Exception.QueueException;
 import de.Lathanael.BinaryFileDB.Exception.RecordsFileException;
+import de.Lathanael.BinaryFileDB.bukkit.Main;
+import de.Lathanael.BinaryFileDB.bukkit.Metrics.Plotter;
 
 /**
  * This class provides an API to a BinaryFile-DataBase through</br>
@@ -48,6 +50,9 @@ public class DBAccessLocked {
 	private final int cacheSize;
 	private int initialSize = 16;
 	private int MAX_KEY_LENGTH = 64, DATA_START_HEADER_LOCATION = 4, RECORD_HEADER_LENGTH = 16, FILE_HEADERS_REGION_LENGTH = 16;
+	private int reads = 0, writes = 0;
+	private boolean custom = false;
+	private Plotter plotter1, plotter2, plotter3;
 
 	/**
 	 * Creates a new database file. The initialSize parameter determines the</br>
@@ -66,6 +71,7 @@ public class DBAccessLocked {
 		cacheSize = 10;
 		this.initialSize = initialSize;
 		file = new RecordsFile(dbPath, initialSize, cacheSize);
+		setMetrics();
 	}
 
 	/**
@@ -82,6 +88,7 @@ public class DBAccessLocked {
 		useQueue = false;
 		cacheSize = 10;
 		file = new RecordsFile(dbPath, accessFlags, cacheSize);
+		setMetrics();
 	}
 
 	/**
@@ -104,6 +111,7 @@ public class DBAccessLocked {
 		cacheSize = 10;
 		this.initialSize = initialSize;
 		file = new RecordsFile(path, initialSize, cacheSize);
+		setMetrics();
 	}
 
 	/**
@@ -123,6 +131,7 @@ public class DBAccessLocked {
 			queue = new DataWriteQueue(queueSize);
 		cacheSize = 10;
 		file = new RecordsFile(path, accessFlags, cacheSize);
+		setMetrics();
 	}
 
 	/**
@@ -152,6 +161,7 @@ public class DBAccessLocked {
 		this.FILE_HEADERS_REGION_LENGTH = FILE_HEADERS_REGION_LENGTH;
 		this.RECORD_HEADER_LENGTH = RECORD_HEADER_LENGTH;
 		file = new RecordsFile(dbPath, initialSize, cacheSize, MAX_KEY_LENGTH, DATA_START_HEADER_LOCATION, FILE_HEADERS_REGION_LENGTH, RECORD_HEADER_LENGTH);
+		setCustomMetrics();
 	}
 
 	/**
@@ -184,6 +194,7 @@ public class DBAccessLocked {
 		this.FILE_HEADERS_REGION_LENGTH = FILE_HEADERS_REGION_LENGTH;
 		this.RECORD_HEADER_LENGTH = RECORD_HEADER_LENGTH;
 		file = new RecordsFile(dbPath, initialSize, cacheSize, MAX_KEY_LENGTH, DATA_START_HEADER_LOCATION, FILE_HEADERS_REGION_LENGTH, RECORD_HEADER_LENGTH);
+		setCustomMetrics();
 	}
 
 	/**
@@ -210,6 +221,7 @@ public class DBAccessLocked {
 		this.FILE_HEADERS_REGION_LENGTH = FILE_HEADERS_REGION_LENGTH;
 		this.RECORD_HEADER_LENGTH = RECORD_HEADER_LENGTH;
 		file = new RecordsFile(dbPath, accessFlags, cacheSize, MAX_KEY_LENGTH, DATA_START_HEADER_LOCATION, FILE_HEADERS_REGION_LENGTH, RECORD_HEADER_LENGTH);
+		setCustomMetrics();
 	}
 
 	/**
@@ -239,6 +251,7 @@ public class DBAccessLocked {
 		this.FILE_HEADERS_REGION_LENGTH = FILE_HEADERS_REGION_LENGTH;
 		this.RECORD_HEADER_LENGTH = RECORD_HEADER_LENGTH;
 		file = new RecordsFile(dbPath, accessFlags, cacheSize, MAX_KEY_LENGTH, DATA_START_HEADER_LOCATION, FILE_HEADERS_REGION_LENGTH, RECORD_HEADER_LENGTH);
+		setCustomMetrics();
 	}
 
 	/**
@@ -259,6 +272,7 @@ public class DBAccessLocked {
 		this.cacheSize = cacheSize;
 		this.initialSize = initialSize;
 		file = new RecordsFile(dbPath, initialSize, cacheSize);
+		setMetrics();
 	}
 
 	/**
@@ -276,6 +290,7 @@ public class DBAccessLocked {
 		useQueue = false;
 		this.cacheSize = cacheSize;
 		file = new RecordsFile(path, accessFlags, cacheSize);
+		setMetrics();
 	}
 
 	/**
@@ -299,6 +314,7 @@ public class DBAccessLocked {
 		this.cacheSize = cacheSize;
 		this.initialSize = initialSize;
 		file = new RecordsFile(path, initialSize, cacheSize);
+		setMetrics();
 	}
 
 	/**
@@ -319,6 +335,7 @@ public class DBAccessLocked {
 			queue = new DataWriteQueue(queueSize);
 		this.cacheSize = cacheSize;
 		file = new RecordsFile(path, accessFlags, cacheSize);
+		setMetrics();
 	}
 
 	/**
@@ -349,6 +366,7 @@ public class DBAccessLocked {
 		this.FILE_HEADERS_REGION_LENGTH = FILE_HEADERS_REGION_LENGTH;
 		this.RECORD_HEADER_LENGTH = RECORD_HEADER_LENGTH;
 		file = new RecordsFile(dbPath, initialSize, cacheSize, MAX_KEY_LENGTH, DATA_START_HEADER_LOCATION, FILE_HEADERS_REGION_LENGTH, RECORD_HEADER_LENGTH);
+		setCustomMetrics();
 	}
 
 	/**
@@ -383,6 +401,7 @@ public class DBAccessLocked {
 		this.FILE_HEADERS_REGION_LENGTH = FILE_HEADERS_REGION_LENGTH;
 		this.RECORD_HEADER_LENGTH = RECORD_HEADER_LENGTH;
 		file = new RecordsFile(dbPath, initialSize, cacheSize, MAX_KEY_LENGTH, DATA_START_HEADER_LOCATION, FILE_HEADERS_REGION_LENGTH, RECORD_HEADER_LENGTH);
+		setCustomMetrics();
 	}
 
 	/**
@@ -410,6 +429,7 @@ public class DBAccessLocked {
 		this.FILE_HEADERS_REGION_LENGTH = FILE_HEADERS_REGION_LENGTH;
 		this.RECORD_HEADER_LENGTH = RECORD_HEADER_LENGTH;
 		file = new RecordsFile(dbPath, accessFlags, cacheSize, MAX_KEY_LENGTH, DATA_START_HEADER_LOCATION, FILE_HEADERS_REGION_LENGTH, RECORD_HEADER_LENGTH);
+		setCustomMetrics();
 	}
 
 	/**
@@ -441,6 +461,7 @@ public class DBAccessLocked {
 		this.FILE_HEADERS_REGION_LENGTH = FILE_HEADERS_REGION_LENGTH;
 		this.RECORD_HEADER_LENGTH = RECORD_HEADER_LENGTH;
 		file = new RecordsFile(dbPath, accessFlags, cacheSize, MAX_KEY_LENGTH, DATA_START_HEADER_LOCATION, FILE_HEADERS_REGION_LENGTH, RECORD_HEADER_LENGTH);
+		setCustomMetrics();
 	}
 
 	/**
@@ -497,6 +518,88 @@ public class DBAccessLocked {
 		return new DBAccessLocked(path, initialSize, cacheSize, MAX_KEY_LENGTH, DATA_START_HEADER_LOCATION, FILE_HEADERS_REGION_LENGTH, RECORD_HEADER_LENGTH);
 	}
 
+	private void setMetrics() {
+		Main.addToAccessLocked();
+		Main.graph.addPlotter(plotter1 = new Plotter() {
+
+			@Override
+			public int getValue() {
+				return reads;
+			}
+
+			@Override
+			public String getColumnName() {
+				return "Total reads";
+			}
+		});
+		Main.graph.addPlotter(plotter2 = new Plotter() {
+
+			@Override
+			public int getValue() {
+				return writes;
+			}
+
+			@Override
+			public String getColumnName() {
+				return "Total writes";
+			}
+		});
+		Main.graph.addPlotter(plotter3 = new Plotter() {
+
+			@Override
+			public int getValue() {
+				return file.getNumRecords();
+			}
+
+			@Override
+			public String getColumnName() {
+				return "Total Records";
+			}
+		});
+	}
+
+	private void setCustomMetrics() {
+		custom = true;
+		Main.addToCustomAccessLocked();
+		Main.graph.addPlotter(plotter1 = new Plotter() {
+
+			@Override
+			public int getValue() {
+				return reads;
+			}
+
+			@Override
+			public String getColumnName() {
+				return "Total reads";
+			}
+		});
+		Main.graph.addPlotter(plotter2 = new Plotter() {
+
+			@Override
+			public int getValue() {
+				return writes;
+			}
+
+			@Override
+			public String getColumnName() {
+				return "Total writes";
+			}
+		});
+		Main.graph.addPlotter(plotter3 = new Plotter() {
+
+			@Override
+			public int getValue() {
+				return file.getNumRecords();
+			}
+
+			@Override
+			public String getColumnName() {
+				return "Total Records";
+			}
+		});
+	}
+
+
 	/**
 	 * Get the RecordsFile associated with this instance.
 	 */
@@ -536,6 +639,7 @@ public class DBAccessLocked {
 	 * @throws InterruptedException
 	 */
 	public RecordReader getRecord(String key) throws RecordsFileException, IOException, InterruptedException {
+		reads++;
 		RecordWriter rw;
 		if (useQueue &&  (rw = queue.getQueuedItem(key)) != null)
 			return new RecordReader(key, rw);
@@ -560,6 +664,7 @@ public class DBAccessLocked {
 	 * @throws InterruptedException
 	 */
 	public void writeRecord(RecordWriter rw) throws RecordsFileException, IOException, QueueException, InterruptedException {
+		writes++;
 		lock.getWriteLock();
 		try {
 			if (useQueue) {
@@ -610,6 +715,7 @@ public class DBAccessLocked {
 	 * @throws InterruptedException
 	 */
 	public void appendRecord(RecordWriter rw) throws RecordsFileException, IOException, QueueException, InterruptedException {
+		writes++;
 		lock.getWriteLock();
 		try {
 			rw.setAppend(true);
@@ -649,6 +755,7 @@ public class DBAccessLocked {
 	 * @throws InterruptedException
 	 */
 	public void quickWriteRecord(RecordWriter rw) throws RecordsFileException, IOException, InterruptedException {
+		writes++;
 		lock.getWriteLock();
 		try {
 			if (file.recordExists(rw.getKey()))
@@ -671,6 +778,7 @@ public class DBAccessLocked {
 	 * @throws InterruptedException
 	 */
 	public void quickInsertRecord(RecordWriter rw) throws RecordsFileException, IOException, InterruptedException {
+		writes++;
 		lock.getWriteLock();
 		try {
 			if (file.recordExists(rw.getKey()))
@@ -693,6 +801,7 @@ public class DBAccessLocked {
 	 * @throws InterruptedException
 	 */
 	public void deleteRecord(String key) throws RecordsFileException, IOException, InterruptedException {
+		writes++;
 		lock.getWriteLock();
 		try {
 			if (useQueue)
@@ -727,6 +836,11 @@ public class DBAccessLocked {
 	 * @throws InterruptedException
 	 */
 	public void closeDB(boolean unsafe) throws IOException, RecordsFileException, InterruptedException {
+		if (custom)
+			Main.removeFromCustomAccessLocked();
+		else
+			Main.removeFromAccessLocked();
+		removePlotters();
 		if (unsafe)
 			forceCloseDB();
 		else
@@ -744,6 +858,7 @@ public class DBAccessLocked {
 		try {
 			if (useQueue) {
 				for (Map.Entry<String, RecordWriter> entry: queue.getQueue().entrySet()) {
+					writes++;
 					if (file.recordExists(entry.getValue().getKey())) {
 						file.updateRecord(entry.getValue());
 						continue;
@@ -764,5 +879,11 @@ public class DBAccessLocked {
 	 */
 	private void forceCloseDB() throws IOException, RecordsFileException {
 		file.close();
+	}
+
+	private void removePlotters() {
+		Main.graph.removePlotter(plotter1);
+		Main.graph.removePlotter(plotter2);
+		Main.graph.removePlotter(plotter3);
 	}
 }

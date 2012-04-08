@@ -18,9 +18,14 @@
 
 package de.Lathanael.BinaryFileDB.bukkit;
 
+import java.io.IOException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.bukkit.plugin.java.JavaPlugin;
+
+import de.Lathanael.BinaryFileDB.bukkit.Metrics.Graph;
+import de.Lathanael.BinaryFileDB.bukkit.Metrics.Graph.Type;
 
 /**
  * @author Lathanael (aka Philippe Leipold)
@@ -28,6 +33,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class Main extends JavaPlugin {
 
 	public static Logger log;
+	public static Graph graph = null;
+	public static int dbAccessCount = 0;
+	public static int dbAccessLockedCount = 0;
+	public static int dbCustomAccessCount = 0;
+	public static int dbCustomAccessLockedCount = 0;
 
 	public void onDisable() {
 		log.info("Version " + this.getDescription().getVersion() + " disabled.");
@@ -35,6 +45,103 @@ public class Main extends JavaPlugin {
 
 	public void onEnable() {
 		log = getLogger();
+		try {
+			final Metrics metrics = new Metrics();
+			graph = metrics.createGraph(this, Type.Line, "Records");
+			metrics.addCustomData(this, new Metrics.Plotter() {
+
+				@Override
+				public int getValue() {
+					return dbAccessCount;
+				}
+
+				@Override
+				public String getColumnName() {
+					return "Total default DB";
+				}
+
+			});
+			metrics.addCustomData(this, new Metrics.Plotter() {
+
+				@Override
+				public int getValue() {
+					return dbAccessLockedCount;
+				}
+
+				@Override
+				public String getColumnName() {
+					return "Total default locked DBs";
+				}
+
+			});
+			metrics.addCustomData(this, new Metrics.Plotter() {
+
+				@Override
+				public int getValue() {
+					return dbCustomAccessCount;
+				}
+
+				@Override
+				public String getColumnName() {
+					return "Total custom DBs";
+				}
+
+			});
+			metrics.addCustomData(this, new Metrics.Plotter() {
+
+				@Override
+				public int getValue() {
+					return dbCustomAccessLockedCount;
+				}
+
+				@Override
+				public String getColumnName() {
+					return "Total custom locked DBs";
+				}
+
+			});
+			getServer().getScheduler().scheduleAsyncDelayedTask(this, new Runnable() {
+				@Override
+				public void run() {
+					metrics.beginMeasuringPlugin(Main.this);
+					log.info("Stats started");
+				}
+			}, 30 * 20);
+		} catch (IOException e) {
+			log.log(Level.SEVERE, "Stats loggin problem", e);
+		}
 		log.info("Version " + this.getDescription().getVersion() + " enabled.");
+	}
+
+	public static void addToAccess() {
+		dbAccessCount++;
+	}
+
+	public static void removeFromAccess() {
+		dbAccessCount--;
+	}
+
+	public static void addToAccessLocked() {
+		dbAccessLockedCount++;
+	}
+
+	public static void removeFromAccessLocked() {
+		dbAccessLockedCount--;
+	}
+
+	public static void addToCustomAccess() {
+		dbCustomAccessCount++;
+	}
+
+	public static void removeFromCustomAccess() {
+		dbCustomAccessCount--;
+	}
+
+	public static void addToCustomAccessLocked() {
+		dbCustomAccessLockedCount++;
+	}
+
+	public static void removeFromCustomAccessLocked() {
+		dbCustomAccessLockedCount--;
 	}
 }

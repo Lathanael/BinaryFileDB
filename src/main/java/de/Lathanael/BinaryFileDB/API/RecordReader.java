@@ -70,6 +70,8 @@ public class RecordReader {
 	 * Reads the next object in the record using an ObjectInputStream.
 	 */
 	public Object readObject() throws IOException, OptionalDataException, ClassNotFoundException {
+		if (obj != null)
+			return obj;
 		return getObjectInputStream().readObject();
 	}
 }

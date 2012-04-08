@@ -192,17 +192,22 @@ public abstract class BaseRecordsFile {
 	private File sanityCheck(String dbPath, boolean create, boolean errorMsg) throws RecordsFileException, IOException {
 		if (dbPath == null)
 			throw new RecordsFileException("Path can not be null");
-		File f = new File(dbPath);
+		String file = dbPath.substring(dbPath.lastIndexOf(File.separator) + 1, dbPath.length());
+		String path = dbPath.substring(0, dbPath.lastIndexOf(File.separator));
+		File pathF = new File(path);
+		if (!pathF.isDirectory() && create)
+			pathF.mkdirs();
+		File f = new File(pathF, file);
 		if (create) {
 			if (f.exists() && errorMsg)
-				throw new RecordsFileException("Database already exists: " + dbPath);
+				throw new RecordsFileException("Database already exists: " + file);
 			if (createFile(f))
 				return f;
 			else
-				throw new RecordsFileException("Failed to create database file at: " + dbPath);
+				throw new RecordsFileException("Failed to create database file at: " + file);
 		} else if (!create) {
 			if (!f.exists() && errorMsg)
-				throw new RecordsFileException("Database not found: " + dbPath);
+				throw new RecordsFileException("Database not found: " + file);
 			return f;
 		}
 		return f;
@@ -218,7 +223,6 @@ public abstract class BaseRecordsFile {
 	private boolean createFile(File dbFile) throws IOException, RecordsFileException {
 		if (dbFile.isDirectory())
 			throw new RecordsFileException("File can not be a directory: " + dbFile.getPath());
-		dbFile.mkdirs();
 		return dbFile.createNewFile();
 	}
 
@@ -509,11 +513,19 @@ public abstract class BaseRecordsFile {
 				// target record is first in the file and is deleted by adding its space to
 				// the second record.
 				IndexEntry secondEntry = getIndexAt(delEntry.dataPointer + (long)delEntry.dataCapacity);
-				byte[] data = readRecordData(secondEntry);
-				secondEntry.dataPointer = delEntry.dataPointer;
-				secondEntry.dataCapacity += delEntry.dataCapacity;
-				writeRecordData(secondEntry, data);
-				writeEntryToIndex(secondEntry);
+				if (secondEntry != null) {
+					byte[] data = readRecordData(secondEntry);
+					secondEntry.dataPointer = delEntry.dataPointer;
+					secondEntry.dataCapacity += delEntry.dataCapacity;
+					writeRecordData(secondEntry, data);
+					writeEntryToIndex(secondEntry);
+				} else {
+					// There was only one entry in the file!!
+					if (delEntry.dataPointer == dataStartPtr)
+						setFileLength(dataStartPtr);
+					else
+						setFileLength(delEntry.dataPointer);
+				}
 			}
 		}
 		deleteEntryFromIndex(key, delEntry, currentNumRecords);
@@ -538,6 +550,10 @@ public abstract class BaseRecordsFile {
 		}
 		while (endIndexPtr > dataStartPtr) {
 			IndexEntry first = getIndexAt(dataStartPtr);
+			if (first == null) {
+				// no entries exists
+				return;
+			}
 			byte[] data = readRecordData(first);
 			first.dataPointer = getFileLength();
 			// If first.dataCapacity is set to the actual data count BEFORE resetting dataStartPtr,

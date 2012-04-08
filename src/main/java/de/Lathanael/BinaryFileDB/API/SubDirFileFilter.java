@@ -72,7 +72,7 @@ public class SubDirFileFilter {
 		FILE, DIR, ALL;
 
 		public boolean accept(final File file) {
-			return file != null && (this == ALL || this == FILE && file.isFile() || this == DIR && file.isDirectory());
+			return file != null && (this == ALL || (this == FILE && file.isFile()) || (this == DIR && file.isDirectory()));
 		}
 	}
 
