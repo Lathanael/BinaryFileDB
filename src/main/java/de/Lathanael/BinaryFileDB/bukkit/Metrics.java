@@ -370,7 +370,7 @@ public class Metrics {
 
 		// Not yet created :(
 		if (graph == null) {
-			graph = new Graph(Graph.Type.Line, "Default");
+			graph = new Graph(Graph.Type.Line, "Databases used");
 			defaultGraphs.put(plugin, graph);
 		}
 

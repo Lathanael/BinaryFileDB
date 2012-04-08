@@ -196,7 +196,7 @@ public class RecordsFile extends BaseRecordsFile {
 	 * @throws RecordsFileException
 	 */
 	protected IndexEntry keyToIndexEntry(String key) throws RecordsFileException {
-		IndexEntry entry = (IndexEntry)memIndex.get(key);
+		IndexEntry entry = memIndex.get(key);
 		if (entry == null) {
 			throw new RecordsFileException("Key not found: " + key);
 		}

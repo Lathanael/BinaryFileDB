@@ -57,7 +57,7 @@ public class Main extends JavaPlugin {
 
 				@Override
 				public String getColumnName() {
-					return "Total default DB";
+					return "Total default DBs";
 				}
 
 			});
