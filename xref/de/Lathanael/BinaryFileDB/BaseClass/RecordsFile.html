@@ -205,7 +205,7 @@
 <a name="196" href="#196">196</a> <em>	 * @throws RecordsFileException</em>
 <a name="197" href="#197">197</a> <em>	 */</em>
 <a name="198" href="#198">198</a> 	<strong>protected</strong> <a href="../../../../de/Lathanael/BinaryFileDB/BaseClass/IndexEntry.html">IndexEntry</a> keyToIndexEntry(String key) throws RecordsFileException {
-<a name="199" href="#199">199</a> 		IndexEntry entry = (IndexEntry)memIndex.get(key);
+<a name="199" href="#199">199</a> 		IndexEntry entry = memIndex.get(key);
 <a name="200" href="#200">200</a> 		<strong>if</strong> (entry == <strong>null</strong>) {
 <a name="201" href="#201">201</a> 			<strong>throw</strong> <strong>new</strong> <a href="../../../../de/Lathanael/BinaryFileDB/Exception/RecordsFileException.html">RecordsFileException</a>(<span class="string">"Key not found: "</span> + key);
 <a name="202" href="#202">202</a> 		}

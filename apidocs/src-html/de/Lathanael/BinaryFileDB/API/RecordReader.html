@@ -73,9 +73,11 @@
 <FONT color="green">070</FONT>             * Reads the next object in the record using an ObjectInputStream.<a name="line.70"></a>
 <FONT color="green">071</FONT>             */<a name="line.71"></a>
 <FONT color="green">072</FONT>            public Object readObject() throws IOException, OptionalDataException, ClassNotFoundException {<a name="line.72"></a>
-<FONT color="green">073</FONT>                    return getObjectInputStream().readObject();<a name="line.73"></a>
-<FONT color="green">074</FONT>            }<a name="line.74"></a>
-<FONT color="green">075</FONT>    }<a name="line.75"></a>
+<FONT color="green">073</FONT>                    if (obj != null)<a name="line.73"></a>
+<FONT color="green">074</FONT>                            return obj;<a name="line.74"></a>
+<FONT color="green">075</FONT>                    return getObjectInputStream().readObject();<a name="line.75"></a>
+<FONT color="green">076</FONT>            }<a name="line.76"></a>
+<FONT color="green">077</FONT>    }<a name="line.77"></a>
 
 
 
