@@ -18,12 +18,11 @@
 
 package de.Lathanael.BinaryFileDB.bukkit;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -35,7 +34,7 @@ import de.Lathanael.BinaryFileDB.bukkit.Metrics.Graph.Type;
  */
 public class Main extends JavaPlugin {
 
-	private YamlConfiguration config;
+	private FileConfiguration config;
 	public static Logger log;
 	public static Graph graph = null;
 	public static int dbAccessCount = 0;
@@ -117,7 +116,7 @@ public class Main extends JavaPlugin {
 			DebugLog.INSTANCE.log(Level.SEVERE, "Stats loggin problem", e);
 		}
 		PluginDescriptionFile pdfFile = this.getDescription();
-		config = YamlConfiguration.loadConfiguration(new File(getDataFolder(), "config.yml"));
+		config = getConfig();
 		ConfigEnum.setPluginInfos(pdfFile);
 		config.addDefaults(ConfigEnum.getDefaultvalues());
 		config.options().header(ConfigEnum.getHeader());
