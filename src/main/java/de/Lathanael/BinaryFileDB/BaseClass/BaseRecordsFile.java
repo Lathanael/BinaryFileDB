@@ -26,6 +26,7 @@ import java.util.*;
 import de.Lathanael.BinaryFileDB.API.RecordReader;
 import de.Lathanael.BinaryFileDB.API.RecordWriter;
 import de.Lathanael.BinaryFileDB.Exception.RecordsFileException;
+import de.Lathanael.BinaryFileDB.bukkit.DebugLog;
 
 /**
  * Abstract class providing basic functions to create low-level binary file database.
@@ -336,8 +337,8 @@ public abstract class BaseRecordsFile {
 	 * @throws IOException
 	 */
 	IndexEntry readEntryFromIndex(int position) throws IOException {
-		file.seek(position);
-		return IndexEntry.readEntry(file);
+		file.seek(indexPositionToEntryFp(position));
+		return IndexEntry.readEntry(file, MAX_KEY_LENGTH);
 	}
 
 	/**
@@ -452,6 +453,15 @@ public abstract class BaseRecordsFile {
 	 * @throws IOException
 	 */
 	protected byte[] readRecordData(IndexEntry entry) throws IOException {
+		DebugLog.INSTANCE.info("Key of entry: " + entry.key);
+		DebugLog.INSTANCE.info("Indexposition of entry: " + entry.indexPosition);
+		DebugLog.INSTANCE.info("Size of entry: " + entry.dataCount);
+		DebugLog.INSTANCE.info("Capacity of entry: " + entry.dataCapacity);
+		DebugLog.INSTANCE.info("Pointer of entry: " + entry.dataPointer);
+		if (entry.dataCount > 1048576) {
+			DebugLog.INSTANCE.info("File to large: " + entry.dataCount + " bytes");
+			throw new IOException("File too large: " + entry.dataCount + " bytes");
+		}
 		byte[] buf = new byte[entry.dataCount];
 		file.seek(entry.dataPointer);
 		file.readFully(buf);
@@ -470,8 +480,14 @@ public abstract class BaseRecordsFile {
 			throw new RecordsFileException ("Record data does not fit");
 		}
 		entry.dataCount = rw.getDataLength();
+		DebugLog.INSTANCE.info("Key of entry: " + entry.key);
+		DebugLog.INSTANCE.info("Indexposition of entry: " + entry.indexPosition);
+		DebugLog.INSTANCE.info("Size of entry: " + entry.dataCount);
+		DebugLog.INSTANCE.info("Capacity of entry: " + entry.dataCapacity);
+		DebugLog.INSTANCE.info("Pointer of entry: " + entry.dataPointer);
 		file.seek(entry.dataPointer);
 		rw.writeTo((DataOutput)file);
+		DebugLog.INSTANCE.info("Entry " + entry.key + " has benn written to the file");
 	}
 
 

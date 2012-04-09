@@ -22,6 +22,7 @@ import java.io.*;
 import java.nio.ByteBuffer;
 
 import de.Lathanael.BinaryFileDB.Exception.RecordsFileException;
+import de.Lathanael.BinaryFileDB.bukkit.DebugLog;
 
 /**
  * IndexEntry object for the DB-file index header
@@ -61,12 +62,6 @@ public class IndexEntry {
 	protected int maxKeyLength;
 
 	/**
-	 * Empty constructor
-	 */
-	protected IndexEntry() {
-	}
-
-	/**
 	 * Creates a new IndexEntry object
 	 * @param dataPointer - Where in the file is the data located.
 	 * @param dataCapacity - The maximum capacity for this entry
@@ -81,6 +76,14 @@ public class IndexEntry {
 		this.key = key;
 		this.maxKeyLength = maxKeyLength;
 		this.dataCount = 0;
+	}
+
+	/**
+	 * Creates a new IndexEntry which values will be read from file.
+	 * @param maxKeyLength - The maximum KeyLength allowed by the {@link de.Lathanael.BinaryFileDB.BaseClass.RecordsFile RecordsFile}
+	 */
+	public IndexEntry(int maxKeyLength) {
+		this.maxKeyLength = maxKeyLength;
 	}
 
 	/**
@@ -126,13 +129,16 @@ public class IndexEntry {
 	}
 
 	protected void read(DataInput in) throws IOException {
-		ByteBuffer buffer = ByteBuffer.allocate(16 + maxKeyLength);
-		in.readFully(buffer.array(), 0, 16 + maxKeyLength);
-		key = converter.readUTF(buffer);
-		buffer.position(maxKeyLength);
-		dataPointer = buffer.getLong();
-		dataCapacity = buffer.getInt();
-		dataCount = buffer.getInt();
+		DebugLog.INSTANCE.info("maxKeyLenght: " + maxKeyLength);
+		byte[] buffer = new byte[16 + maxKeyLength];
+		ByteBuffer bb = ByteBuffer.wrap(buffer);
+		in.readFully(buffer, 0, 16 + maxKeyLength);
+		DebugLog.INSTANCE.info("[BufferContent] " + dumpBytes(buffer));
+		key = converter.readUTF(bb);
+		bb.position(maxKeyLength);
+		dataPointer = bb.getLong();
+		dataCapacity = bb.getInt();
+		dataCount = bb.getInt();
 	}
 
 	protected void write(DataOutput out) throws IOException {
@@ -143,8 +149,8 @@ public class IndexEntry {
 		out.write(buffer.array());
 	}
 
-	protected static IndexEntry readEntry(DataInput in) throws IOException {
-		IndexEntry entry = new IndexEntry();
+	protected static IndexEntry readEntry(DataInput in, int maxKeyLength) throws IOException {
+		IndexEntry entry = new IndexEntry(maxKeyLength);
 		entry.read(in);
 		return entry;
 	}
@@ -158,5 +164,25 @@ public class IndexEntry {
 		IndexEntry newRecord = new IndexEntry(newFp, getFreeSpace(), key, maxKeyLength);
 		dataCapacity = dataCount;
 		return newRecord;
+	}
+
+	private static final byte[] HEX_CHAR = new byte[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
+
+	/**
+	 * Helper function that dump an array of bytes in hex form
+	 *
+	 * @param buffer
+	 *            The bytes array to dump
+	 * @return A string representation of the array of bytes
+	 */
+	public static final String dumpBytes(byte[] buffer) {
+		if ( buffer == null ) {
+			return "";
+		}
+		StringBuffer sb = new StringBuffer();
+		for ( int i = 0; i < buffer.length; i++ ) {
+			sb.append("0x").append((char) (HEX_CHAR[(buffer[i] & 0x00F0 ) >> 4])).append((char) (HEX_CHAR[buffer[i] & 0x000F])).append(" ");
+		}
+		return sb.toString();
 	}
 }
