@@ -82,7 +82,7 @@ public class IndexEntry {
 	 * Creates a new IndexEntry which values will be read from file.
 	 * @param maxKeyLength - The maximum KeyLength allowed by the {@link de.Lathanael.BinaryFileDB.BaseClass.RecordsFile RecordsFile}
 	 */
-	public IndexEntry(int maxKeyLength) {
+	protected IndexEntry(int maxKeyLength) {
 		this.maxKeyLength = maxKeyLength;
 	}
 
