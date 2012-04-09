@@ -18,10 +18,13 @@
 
 package de.Lathanael.BinaryFileDB.bukkit;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import de.Lathanael.BinaryFileDB.bukkit.Metrics.Graph;
@@ -32,6 +35,7 @@ import de.Lathanael.BinaryFileDB.bukkit.Metrics.Graph.Type;
  */
 public class Main extends JavaPlugin {
 
+	private YamlConfiguration config;
 	public static Logger log;
 	public static Graph graph = null;
 	public static int dbAccessCount = 0;
@@ -40,11 +44,13 @@ public class Main extends JavaPlugin {
 	public static int dbCustomAccessLockedCount = 0;
 
 	public void onDisable() {
+		DebugLog.stopLogging();
 		log.info("Version " + this.getDescription().getVersion() + " disabled.");
 	}
 
 	public void onEnable() {
 		log = getLogger();
+		DebugLog.setFile(getDataFolder().getPath());
 		try {
 			final Metrics metrics = new Metrics();
 			graph = metrics.createGraph(this, Type.Line, "Records");
@@ -104,13 +110,24 @@ public class Main extends JavaPlugin {
 				@Override
 				public void run() {
 					metrics.beginMeasuringPlugin(Main.this);
-					log.info("Stats started");
+					log.info("Stats logging started, you can opt-out via the config in the PluginMetrics folder");
 				}
 			}, 30 * 20);
 		} catch (IOException e) {
-			log.log(Level.SEVERE, "Stats loggin problem", e);
+			DebugLog.INSTANCE.log(Level.SEVERE, "Stats loggin problem", e);
 		}
-		log.info("Version " + this.getDescription().getVersion() + " enabled.");
+		PluginDescriptionFile pdfFile = this.getDescription();
+		config = YamlConfiguration.loadConfiguration(new File(getDataFolder(), "config.yml"));
+		ConfigEnum.setPluginInfos(pdfFile);
+		config.addDefaults(ConfigEnum.getDefaultvalues());
+		config.options().header(ConfigEnum.getHeader());
+		config.options().copyDefaults(true).copyHeader(true);
+		ConfigEnum.setConfig(config);
+		saveConfig();
+		if (!ConfigEnum.DEBUG.getBoolean()) {
+			DebugLog.stopLogging();
+		}
+		log.info("Version " + pdfFile.getVersion() + " enabled.");
 	}
 
 	public static void addToAccess() {
