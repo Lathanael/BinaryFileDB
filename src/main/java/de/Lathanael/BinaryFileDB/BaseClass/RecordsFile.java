@@ -205,9 +205,10 @@ public class RecordsFile extends BaseRecordsFile {
 	}
 
 	/**
-	 * This method searches the file for free space and then returns a IndexEntry
-	 * which uses the space. (O(log(n)) memory accesses if space is in the
-	 * ConcurrentSkipListMap of free spaces or O(log(n)+n) if not)
+	 * This method searches the file for free space and then returns a IndexEntry</br>
+	 * which uses the space.</br>
+	 * (O(log(n)) memory accesses if space is in the ConcurrentSkipListMap of free spaces</br>
+	 * or O(log(n)+n) if not)
 	 * @throws IOException
 	 * @throws RecordsFileException
 	 */
@@ -252,9 +253,10 @@ public class RecordsFile extends BaseRecordsFile {
 	}
 
 	/**
-	 * Returns the record to which the target file pointer belongs - meaning the specified location
-	 * in the file is part of the record data of the IndexEntry which is returned. Returns null if
-	 * the location is not part of a record. (O(n) mem accesses)
+	 * Returns the record to which the target file pointer belongs - meaning</br>
+	 * that the specified location in the file is part of the record data of the</br>
+	 * IndexEntry which is returned. Returns null if the location is not part</br>
+	 * of a record. (O(n) mem accesses)
 	 * @throws RecordsFileException
 	 */
 	// TODO: Performance increase with better Big O
@@ -286,11 +288,13 @@ public class RecordsFile extends BaseRecordsFile {
 	}
 
 	/**
-	 * Adds the new record to the in-memory index and calls the super class add
+	 * Adds the new record to the in-memory index and calls the super class</br>
+	 * to add
 	 * the index entry to the file.
 	 * @throws IOException
 	 * @throws RecordsFileException
 	 */
+	@Override
 	protected void addEntryToIndex(IndexEntry newEntry, int currentNumRecords) throws IOException, RecordsFileException {
 		super.addEntryToIndex(newEntry, currentNumRecords);
 		memIndex.put(newEntry.getKey(), newEntry);
