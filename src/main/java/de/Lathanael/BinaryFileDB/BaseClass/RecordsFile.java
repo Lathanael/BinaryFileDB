@@ -165,7 +165,8 @@ public class RecordsFile extends BaseRecordsFile {
 			IndexEntry entry = readEntryFromIndex(i);
 			String key = entry.getKey();
 			entry.setIndexPosition(i);
-			freeRecordSpace.putIfAbsent(entry.getFreeSpace(), entry);
+			if (entry.getFreeSpace() > 0)
+				freeRecordSpace.putIfAbsent(entry.getFreeSpace(), entry);
 			memIndex.put(key, entry);
 		}
 	}
@@ -219,7 +220,8 @@ public class RecordsFile extends BaseRecordsFile {
 			newEntry = ceil.getValue().split(key);
 			writeEntryToIndex(ceil.getValue());
 			freeRecordSpace.remove(ceil.getKey());
-			freeRecordSpace.putIfAbsent(newEntry.getFreeSpace(), newEntry);
+			if (newEntry.getFreeSpace() > 0)
+				freeRecordSpace.putIfAbsent(newEntry.getFreeSpace(), newEntry);
 		}
 		// if map did not contain an entry, make sure there really is no space which is untracked!
 		if (newEntry == null) {
@@ -236,7 +238,8 @@ public class RecordsFile extends BaseRecordsFile {
 					// While we are looping through the records, lets put all free space in the
 					// Map if it is not already present. This might result in a better performance
 					// for the next search!
-					freeRecordSpace.putIfAbsent(free, next);
+					if (free > 0)
+						freeRecordSpace.putIfAbsent(free, next);
 				}
 		}
 		if (newEntry == null) {
@@ -288,9 +291,9 @@ public class RecordsFile extends BaseRecordsFile {
 	 * @throws IOException
 	 * @throws RecordsFileException
 	 */
-	protected void addEntryToIndex(String key, IndexEntry newEntry, int currentNumRecords) throws IOException, RecordsFileException {
+	protected void addEntryToIndex(IndexEntry newEntry, int currentNumRecords) throws IOException, RecordsFileException {
 		super.addEntryToIndex(newEntry, currentNumRecords);
-		memIndex.put(key, newEntry);
+		memIndex.put(newEntry.getKey(), newEntry);
 	}
 
 	/**
