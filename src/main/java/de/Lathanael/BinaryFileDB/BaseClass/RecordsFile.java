@@ -29,6 +29,7 @@ import java.util.concurrent.ConcurrentSkipListMap;
 import de.Lathanael.BinaryFileDB.API.RecordReader;
 import de.Lathanael.BinaryFileDB.Exception.CacheSizeException;
 import de.Lathanael.BinaryFileDB.Exception.RecordsFileException;
+import de.Lathanael.BinaryFileDB.bukkit.DebugLog;
 
 
 /**
@@ -135,6 +136,9 @@ public class RecordsFile extends BaseRecordsFile {
 			freeRecordSpace.putIfAbsent(entry.getFreeSpace(), entry);
 			memIndex.put(key, entry);
 		}
+		DebugLog.INSTANCE.info("Loaded database from file:");
+		DebugLog.INSTANCE.info("Read number of records: " + numRecords);
+		DebugLog.INSTANCE.info("Size of the memIndex: " + memIndex.size());
 	}
 
 	/**
@@ -213,8 +217,8 @@ public class RecordsFile extends BaseRecordsFile {
 	 * @throws RecordsFileException
 	 */
 	protected IndexEntry allocateRecord(String key, int dataLength) throws RecordsFileException, IOException {
-		// search for empty space
 		IndexEntry newEntry = null;
+		// search for empty space
 		// First in the memory-map
 		Entry<Integer, IndexEntry> ceil = freeRecordSpace.ceilingEntry(dataLength);
 		if (ceil != null) {
@@ -228,11 +232,12 @@ public class RecordsFile extends BaseRecordsFile {
 		if (newEntry == null) {
 			Enumeration<IndexEntry> e = memIndex.elements();
 				while (e.hasMoreElements()) {
-					IndexEntry next = (IndexEntry)e.nextElement();
+					IndexEntry next = e.nextElement();
 					int free = next.getFreeSpace();
 					if (dataLength <= free) {
 						newEntry = next.split(key);
 						writeEntryToIndex(next);
+						freeRecordSpace.remove(next.key);
 						freeRecordSpace.putIfAbsent(newEntry.getFreeSpace(), newEntry);
 						break;
 					}
