@@ -28,8 +28,8 @@ import org.bukkit.configuration.Configuration;
 import org.bukkit.plugin.PluginDescriptionFile;
 
 /**
+ * @author Balor (aka Antoine Aflalo)
  * @author Lathanael (aka Philippe Leipold)
- *
  */
 public enum ConfigEnum {
 
