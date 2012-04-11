@@ -796,7 +796,10 @@ public class DBAccess {
 			Main.removeFromCustomAccess();
 		else
 			Main.removeFromAccess();
-		removePlotters();
+		try {
+			removePlotters();
+		} catch (Exception e) {
+		}
 		if (unsafe)
 			forceCloseDB();
 		else
