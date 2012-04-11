@@ -346,7 +346,7 @@ public abstract class BaseRecordsFile {
 	 * @throws IOException
 	 */
 	protected void writeEntryToIndex(IndexEntry entry) throws IOException {
-		file.seek(entry.indexPosition);
+		file.seek(indexPositionToEntryFp(entry.indexPosition));
 		entry.write(file);
 	}
 
@@ -371,7 +371,11 @@ public abstract class BaseRecordsFile {
 	 */
 	protected void deleteEntryFromIndex(String key, IndexEntry entry, int currentNumRecords) throws IOException, RecordsFileException {
 		if (entry.indexPosition != currentNumRecords - 1) {
+			DebugLog.INSTANCE.info("Deleting entry...");
+			DebugLog.INSTANCE.info("Key of entry: " + entry.key);
+			DebugLog.INSTANCE.info("Indexposition of entry: " + entry.indexPosition);
 			String lastKey = readKeyFromIndex(currentNumRecords - 1);
+			DebugLog.INSTANCE.info("Key from last entry: " + lastKey);
 			IndexEntry last = keyToIndexEntry(lastKey);
 			last.setIndexPosition(entry.indexPosition);
 			file.seek(indexPositionToEntryFp(last.indexPosition));
@@ -453,11 +457,10 @@ public abstract class BaseRecordsFile {
 	 * @throws IOException
 	 */
 	protected byte[] readRecordData(IndexEntry entry) throws IOException {
+		DebugLog.INSTANCE.info("Reading from file: " + file.toString());
 		DebugLog.INSTANCE.info("Key of entry: " + entry.key);
-		DebugLog.INSTANCE.info("Indexposition of entry: " + entry.indexPosition);
-		DebugLog.INSTANCE.info("Size of entry: " + entry.dataCount);
-		DebugLog.INSTANCE.info("Capacity of entry: " + entry.dataCapacity);
-		DebugLog.INSTANCE.info("Pointer of entry: " + entry.dataPointer);
+		DebugLog.INSTANCE.info("Indexposition of entry: " + entry.indexPosition + ", size of entry: " + entry.dataCount
+				+ ", capacity of entry: " + entry.dataCapacity + ", pointer of entry: " + entry.dataPointer);
 		if (entry.dataCount > 1048576) {
 			DebugLog.INSTANCE.info("File to large: " + entry.dataCount + " bytes");
 			throw new IOException("File too large: " + entry.dataCount + " bytes");
@@ -480,11 +483,10 @@ public abstract class BaseRecordsFile {
 			throw new RecordsFileException ("Record data does not fit");
 		}
 		entry.dataCount = rw.getDataLength();
+		DebugLog.INSTANCE.info("Writing to file: " + file.toString());
 		DebugLog.INSTANCE.info("Key of entry: " + entry.key);
-		DebugLog.INSTANCE.info("Indexposition of entry: " + entry.indexPosition);
-		DebugLog.INSTANCE.info("Size of entry: " + entry.dataCount);
-		DebugLog.INSTANCE.info("Capacity of entry: " + entry.dataCapacity);
-		DebugLog.INSTANCE.info("Pointer of entry: " + entry.dataPointer);
+		DebugLog.INSTANCE.info("Indexposition of entry: " + entry.indexPosition + ", size of entry: " + entry.dataCount
+				+ ", capacity of entry: " + entry.dataCapacity + ", pointer of entry: " + entry.dataPointer);
 		file.seek(entry.dataPointer);
 		rw.writeTo((DataOutput)file);
 		DebugLog.INSTANCE.info("Entry " + entry.key + " has benn written to the file");
