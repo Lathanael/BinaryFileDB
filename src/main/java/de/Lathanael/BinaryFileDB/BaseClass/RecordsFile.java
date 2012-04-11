@@ -237,8 +237,9 @@ public class RecordsFile extends BaseRecordsFile {
 					if (dataLength <= free) {
 						newEntry = next.split(key);
 						writeEntryToIndex(next);
-						freeRecordSpace.remove(next.key);
-						freeRecordSpace.putIfAbsent(newEntry.getFreeSpace(), newEntry);
+						freeRecordSpace.remove(free);
+						if (newEntry.getFreeSpace() > 0)
+							freeRecordSpace.putIfAbsent(newEntry.getFreeSpace(), newEntry);
 						break;
 					}
 					// While we are looping through the records, lets put all free space in the
